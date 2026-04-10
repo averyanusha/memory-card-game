@@ -34,10 +34,34 @@ function App() {
     {id: 11, name: 'High Sparrow', image: highSparrowCard},
     {id: 12, name: 'The Hound', image: houndCard}
   ]
+
+  // Fisher-Yates shuffle algorithm 
+
+  function shuffle(array: []) : []{
+    for (let i = array.length - 1; i > 0; i --) {
+      const random: number = Math.floor(Math.random() * (i + 1));
+      [array[i], array[random] = array[random], array[i]]
+    }
+    return array;
+  }
+
   // const clickedIds: number [] = [];
 
   return (
     <>
+      <div className='container hero'>
+        <div className='cards'>
+          {cardsDb.map((card) => {
+            return (
+              <div key={card.id} className='card'>
+                <button>
+                  <img src={card.image} alt={card.name} className='card-img'/>
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </>
   )
 }

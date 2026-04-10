@@ -1,0 +1,19 @@
+.container {
+  max-width: 100vw;
+  padding: 1rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 10rem);
+  grid-template-rows: repeat(3, 10rem);
+  gap: 1rem;
+}
+
+.card-img {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  object-position: top;
+  cursor: pointer;
+}
