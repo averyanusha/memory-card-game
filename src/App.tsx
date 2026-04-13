@@ -33,28 +33,52 @@ function App() {
     {id: 10, name: 'Little Finger', image: littleFingerCard},
     {id: 11, name: 'High Sparrow', image: highSparrowCard},
     {id: 12, name: 'The Hound', image: houndCard}
-  ]
+  ];
+
+  const [idArray, setIdArray] = useState<number[]>(cardsDb.map((card) => card.id));
+
+  const [clickedId, setClickedId] = useState<number[]>([]);
+
+  const [gameOver, setGameOver] = useState<boolean>(false);
+
+  const handleClickedCards = (id: number) => {
+    const stored = localStorage.getItem('ids');
+    let savedIds: number[];
+    savedIds = stored ? JSON.parse(stored) : [];
+    if (!savedIds.find((el) => el === id)) {
+      savedIds.push(id);
+      setClickedId(savedIds);
+      localStorage.setItem('ids', JSON.stringify(savedIds));
+      setIdArray(shuffle(idArray));
+    } else {
+      setGameOver(true);
+    }
+  }
+
 
   // Fisher-Yates shuffle algorithm 
 
-  function shuffle(array: []) : []{
+  function shuffle(array: number[]) : number[]{
     for (let i = array.length - 1; i > 0; i --) {
       const random: number = Math.floor(Math.random() * (i + 1));
-      [array[i], array[random] = array[random], array[i]]
+      [array[i], array[random]] = [array[random], array[i]];
     }
     return array;
   }
 
-  // const clickedIds: number [] = [];
 
   return (
     <>
       <div className='container hero'>
         <div className='cards'>
-          {cardsDb.map((card) => {
+          {idArray.map((id) => {
+            const card = cardsDb.find(card => card.id === id)
+            if (!card)
+              return null;
             return (
-              <div key={card.id} className='card'>
-                <button>
+              <div key={id} className='card'>
+                <button onClick={() => 
+                  handleClickedCards(id)}>
                   <img src={card.image} alt={card.name} className='card-img'/>
                 </button>
               </div>
