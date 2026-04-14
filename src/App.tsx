@@ -39,6 +39,7 @@ function App() {
 
   const [clickedId, setClickedId] = useState<number[]>([]);
 
+
   const [gameOver, setGameOver] = useState<boolean>(false);
 
   const handleClickedCards = (id: number) => {
@@ -53,6 +54,12 @@ function App() {
     } else {
       setGameOver(true);
     }
+  }
+
+  const resetClickedCards = () => {
+    setClickedId([]);
+    localStorage.setItem('ids', JSON.stringify([]))
+    setGameOver(false)
   }
 
 
@@ -70,21 +77,27 @@ function App() {
   return (
     <>
       <div className='container hero'>
-        <div className='cards'>
-          {idArray.map((id) => {
-            const card = cardsDb.find(card => card.id === id)
-            if (!card)
-              return null;
-            return (
-              <div key={id} className='card'>
-                <button onClick={() => 
-                  handleClickedCards(id)}>
-                  <img src={card.image} alt={card.name} className='card-img'/>
-                </button>
-              </div>
-            )
-          })}
-        </div>
+        {gameOver ? <div className='gameover'>
+                    <h2>Gameover</h2>
+                    <p>You lose!</p>
+                    <button className='gameover-button' onClick={() => resetClickedCards()}>Start Over</button>
+                    </div> : 
+          <div className='cards'>
+            {idArray.map((id) => {
+              const card = cardsDb.find(card => card.id === id)
+              if (!card)
+                return null;
+              return (
+                <div key={id} className='card'>
+                  <button onClick={() => 
+                    handleClickedCards(id)}>
+                    <img src={card.image} alt={card.name} className='card-img'/>
+                  </button>
+                </div>
+              )
+            })}
+        </div>}
+        <h3 className='score'>{clickedId.length}\{idArray.length}</h3>
       </div>
     </>
   )
