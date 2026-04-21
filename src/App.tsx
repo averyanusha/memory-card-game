@@ -8,6 +8,7 @@ function App() {
 
   const [clickedId, setClickedId] = useState<number[]>([]);
 
+  const [displayCards, setDisplayCards] = useState<number[]>([]);
 
   const [gameOver, setGameOver] = useState<boolean>(false);
 
@@ -19,7 +20,7 @@ function App() {
       savedIds.push(id);
       setClickedId(savedIds);
       localStorage.setItem('ids', JSON.stringify(savedIds));
-      setIdArray(shuffle(idArray));
+      setIdArray(shuffle(displayCards));
     } else {
       setGameOver(true);
     }
@@ -46,14 +47,20 @@ function App() {
   return (
     <>
       <div className='container hero'>
-        {gameOver ? 
+        {displayCards.length === 0 ? <div className="level">
+          <h2>Choose your level</h2>
+          <button onClick={() => {setDisplayCards(idArray.slice(0,5))}}>Easy</button>
+          <button onClick={() => {setDisplayCards(idArray.slice(0, 10))}}>Medium</button>
+          <button onClick={() => {setDisplayCards(idArray)}}>Hard</button>
+        </div> : 
+        gameOver ? 
           <div className='gameover'>
           <h2>Gameover</h2>
           <p>You lose!</p>
           <button className='gameover-button' onClick={() => resetClickedCards()}>Start Over</button>
           </div> : 
           <div className='cards'>
-            {idArray.map((id) => {
+            {displayCards.map((id) => {
               const card = CardsDb.find(card => card.id === id)
               if (!card)
                 return null;
@@ -66,7 +73,8 @@ function App() {
                 </div>
               )
             })}
-        </div>}
+          </div>
+        }
         <h3 className='score'>{clickedId.length}\{idArray.length}</h3>
       </div>
     </>
