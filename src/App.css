@@ -13,6 +13,28 @@
   align-items: center;
 }
 
+.level {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.game-title {
+  font-size: 2rem;
+  color: white;
+}
+
+.game-button {
+  padding: 1rem;
+  margin: 1rem;
+  cursor: pointer;
+}
+
+.game-button:hover {
+  background-color: burlywood;
+  color: black;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(5, 10rem);
@@ -30,6 +52,7 @@
 
 .gameover {
   color: white;
+  padding: 1rem;
 }
 
 .score {

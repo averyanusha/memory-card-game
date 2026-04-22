@@ -20,7 +20,7 @@ function App() {
       savedIds.push(id);
       setClickedId(savedIds);
       localStorage.setItem('ids', JSON.stringify(savedIds));
-      setIdArray(shuffle(displayCards));
+      setDisplayCards(shuffle(displayCards));
     } else {
       setGameOver(true);
     }
@@ -48,16 +48,19 @@ function App() {
     <>
       <div className='container hero'>
         {displayCards.length === 0 ? <div className="level">
-          <h2>Choose your level</h2>
-          <button onClick={() => {setDisplayCards(idArray.slice(0,5))}}>Easy</button>
-          <button onClick={() => {setDisplayCards(idArray.slice(0, 10))}}>Medium</button>
-          <button onClick={() => {setDisplayCards(idArray)}}>Hard</button>
+          <h2 className='game-title'>Choose your level</h2>
+          <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0,5))}}>Easy</button>
+          <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0, 10))}}>Medium</button>
+          <button className='game-button' onClick={() => {setDisplayCards(idArray)}}>Hard</button>
         </div> : 
         gameOver ? 
           <div className='gameover'>
-          <h2>Gameover</h2>
+          <h2 className='game-title'>Gameover</h2>
           <p>You lose!</p>
-          <button className='gameover-button' onClick={() => resetClickedCards()}>Start Over</button>
+          <button className='game-button' onClick={() => {
+            resetClickedCards()
+            setDisplayCards([]);
+            }}>Start Over</button>
           </div> : 
           <div className='cards'>
             {displayCards.map((id) => {
