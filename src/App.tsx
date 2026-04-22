@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CardsDb } from './components/CardDatabase';
+import { motion } from 'motion/react';
 import './App.css'
 
 function App() {
@@ -47,12 +48,12 @@ function App() {
   return (
     <>
       <div className='container hero'>
-        {displayCards.length === 0 ? <div className="level">
-          <h2 className='game-title'>Choose your level</h2>
+        {displayCards.length === 0 ? <motion.div className="level" initial={{opacity: 0}} animate={{opacity: 1}}>
+          <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
           <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0,5))}}>Easy</button>
           <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0, 10))}}>Medium</button>
           <button className='game-button' onClick={() => {setDisplayCards(idArray)}}>Hard</button>
-        </div> : 
+        </motion.div> : 
         gameOver ? 
           <div className='gameover'>
           <h2 className='game-title'>Gameover</h2>
@@ -62,23 +63,27 @@ function App() {
             setDisplayCards([]);
             }}>Start Over</button>
           </div> : 
-          <div className='cards'>
+          <motion.div className='cards'>
             {displayCards.map((id) => {
               const card = CardsDb.find(card => card.id === id)
               if (!card)
                 return null;
               return (
-                <div key={id} className='card'>
+                <motion.div key={id} className='card' initial={{y: '-100vh'}} animate={{y: 0}} transition={{delay: 0.2}}>
                   <button onClick={() => 
                     handleClickedCards(id)}>
                     <img src={card.image} alt={card.name} className='card-img'/>
                   </button>
-                </div>
+                </motion.div>
               )
             })}
-          </div>
+          </motion.div>
         }
-        <h3 className='score'>{clickedId.length}\{idArray.length}</h3>
+        {(displayCards.length > 0) && (!gameOver) && (
+          <motion.h3 className='score' initial={{opacity: 0}} animate={{opacity: 1}}>
+            {clickedId.length}/{idArray.length}
+          </motion.h3>
+        )}
       </div>
     </>
   )

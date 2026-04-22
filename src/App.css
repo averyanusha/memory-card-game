@@ -21,7 +21,7 @@
 
 .game-title {
   font-size: 2rem;
-  color: white;
+  color: #ffdf99;
 }
 
 .game-button {
@@ -37,6 +37,7 @@
 
 .cards {
   display: grid;
+  margin: 5rem;
   grid-template-columns: repeat(5, 10rem);
   grid-template-rows: repeat(3, 10rem);
   gap: 1rem;
@@ -57,5 +58,4 @@
 
 .score {
   font-size: 2rem;
-  margin: 2rem 0;
 }
