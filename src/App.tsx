@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CardsDb } from './components/CardDatabase';
 import { motion } from 'motion/react';
+import DisplayCards from './components/DisplayCards'
 import './App.css'
 
 function App() {
@@ -12,6 +13,10 @@ function App() {
   const [displayCards, setDisplayCards] = useState<number[]>([]);
 
   const [gameOver, setGameOver] = useState<boolean>(false);
+
+  const [flip, setFlip] = useState<boolean>(true);
+
+  const [win, setWin] = useState<boolean>(false);
 
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');
@@ -29,8 +34,7 @@ function App() {
 
   const resetClickedCards = () => {
     setClickedId([]);
-    localStorage.setItem('ids', JSON.stringify([]))
-    setGameOver(false)
+    localStorage.setItem('ids', JSON.stringify([]));
   }
 
 
@@ -48,7 +52,7 @@ function App() {
   return (
     <>
       <div className='container hero'>
-        {displayCards.length === 0 ? <motion.div className="level" initial={{opacity: 0}} animate={{opacity: 1}}>
+        {displayCards.length === 0 ? <motion.div className="level">
           <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
           <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0,5))}}>Easy</button>
           <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0, 10))}}>Medium</button>
@@ -57,33 +61,37 @@ function App() {
         gameOver ? 
           <div className='gameover'>
           <h2 className='game-title'>Gameover</h2>
-          <p>You lose!</p>
+          <p className='game-subtitle'>You lose!</p>
           <button className='game-button' onClick={() => {
+            setGameOver(false)
             resetClickedCards()
             setDisplayCards([]);
-            }}>Start Over</button>
+            }}>
+              Start Over
+          </button>
           </div> : 
-          <motion.div className='cards'>
-            {displayCards.map((id) => {
-              const card = CardsDb.find(card => card.id === id)
-              if (!card)
-                return null;
-              return (
-                <motion.div key={id} className='card' initial={{y: '-100vh'}} animate={{y: 0}} transition={{delay: 0.2}}>
-                  <button onClick={() => 
-                    handleClickedCards(id)}>
-                    <img src={card.image} alt={card.name} className='card-img'/>
-                  </button>
-                </motion.div>
-              )
-            })}
-          </motion.div>
+          <div className='game'>
+            {(displayCards.length > 0) && (
+              <motion.h3 className='score' initial={{opacity: 0}} animate={{opacity: 1}}>
+                {clickedId.length}/{displayCards.length}
+              </motion.h3>
+            )}
+            {(clickedId.length === displayCards.length) ?  
+              <motion.div className='win' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 1, type: 'spring', stiffness: 50}}>
+                <motion.h3 className='game-title'>You win</motion.h3>
+                <button className='game-button' onClick={() => {
+                  setGameOver(false)
+                  resetClickedCards()
+                  setDisplayCards([]);
+                  }}>
+                    Start Over
+                </button>
+              </motion.div>
+            :
+            <DisplayCards displayCards={displayCards} flip={flip} setFlip={setFlip} handleClickedCards={handleClickedCards}/>
+            }
+          </div>
         }
-        {(displayCards.length > 0) && (!gameOver) && (
-          <motion.h3 className='score' initial={{opacity: 0}} animate={{opacity: 1}}>
-            {clickedId.length}/{idArray.length}
-          </motion.h3>
-        )}
       </div>
     </>
   )
