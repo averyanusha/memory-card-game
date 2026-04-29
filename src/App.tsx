@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef  } from 'react'
 import { CardsDb } from './components/CardDatabase';
 import { motion } from 'motion/react';
 import DisplayCards from './components/DisplayCards'
@@ -18,6 +18,8 @@ function App() {
 
   const [win, setWin] = useState<boolean>(false);
 
+  const timeout = useRef<number | null>(null)
+
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');
     let savedIds: number[];
@@ -35,6 +37,7 @@ function App() {
   const resetClickedCards = () => {
     setClickedId([]);
     localStorage.setItem('ids', JSON.stringify([]));
+    timeout.current && clearTimeout(timeout.current);
   }
 
 
@@ -88,7 +91,7 @@ function App() {
                 </button>
               </motion.div>
             :
-            <DisplayCards displayCards={displayCards} flip={flip} setFlip={setFlip} handleClickedCards={handleClickedCards}/>
+            <DisplayCards displayCards={displayCards} flip={flip} setFlip={setFlip} timeout={timeout} handleClickedCards={handleClickedCards}/>
             }
           </div>
         }

@@ -2,10 +2,11 @@ import { CardsDb } from './CardDatabase';
 import { motion } from 'motion/react'
 import backOfTheCard from '../assets/cards-cover.jpg'
 
-export default function DisplayCards ({displayCards, flip, setFlip, handleClickedCards}: {
+export default function DisplayCards ({displayCards, flip, setFlip, timeout, handleClickedCards}: {
   displayCards: number[],
   flip: boolean,
   setFlip: (value : boolean) => void,
+  timeout: React.MutableRefObject <number | null>,
   handleClickedCards: (id: number) => void
 }) {
   return (
