@@ -6,20 +6,20 @@ export default function DisplayCards ({displayCards, flip, setFlip, timeout, han
   displayCards: number[],
   flip: boolean,
   setFlip: (value : boolean) => void,
-  timeout: React.MutableRefObject <number | null>,
+  timeout: React.RefObject <number | null>,
   handleClickedCards: (id: number) => void
 }) {
   return (
     <div className='cards'>
-      {displayCards.map((id) => {
+      {displayCards.map((id, index) => {
         const card = CardsDb.find(card => card.id === id)
         if (!card)
           return null;
         return (
-          <motion.div key={id} className='card'>
-            <button onClick={() => {
+          <motion.div key={index} className='card'>
+            <button className='card-button' onClick={() => {
               setFlip(false)
-              setTimeout(() => {
+              timeout.current = setTimeout(() => {
                 handleClickedCards(id)
                 setFlip(true)
                 }, 1000)}}>

@@ -8,6 +8,8 @@ function App() {
 
   const [idArray, setIdArray] = useState<number[]>(CardsDb.map((card) => card.id));
 
+  const [level, setLevel] = useState<number>(0);
+
   const [clickedId, setClickedId] = useState<number[]>([]);
 
   const [displayCards, setDisplayCards] = useState<number[]>([]);
@@ -18,7 +20,7 @@ function App() {
 
   const [win, setWin] = useState<boolean>(false);
 
-  const timeout = useRef<number | null>(null)
+  const timeout = useRef<number | null>(null);
 
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');
@@ -28,7 +30,7 @@ function App() {
       savedIds.push(id);
       setClickedId(savedIds);
       localStorage.setItem('ids', JSON.stringify(savedIds));
-      setDisplayCards(shuffle(displayCards));
+      shuffleSlice(level);
     } else {
       setGameOver(true);
     }
@@ -51,15 +53,27 @@ function App() {
     return array;
   }
 
+  const shuffleSlice = (level: number) => {
+    setDisplayCards(shuffle(idArray).slice(0, level))
+  }
 
   return (
     <>
       <div className='container hero'>
-        {displayCards.length === 0 ? <motion.div className="level">
+        {displayCards.length === 0 ? <motion.div className="level" initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
           <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
-          <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0,5))}}>Easy</button>
-          <button className='game-button' onClick={() => {setDisplayCards(idArray.slice(0, 10))}}>Medium</button>
-          <button className='game-button' onClick={() => {setDisplayCards(idArray)}}>Hard</button>
+          <button className='game-button' onClick={() => {
+            setLevel(5);
+            shuffleSlice(5);
+            }}>Easy</button>
+          <button className='game-button' onClick={() => {
+            setLevel(10);
+            shuffleSlice(10);
+            }}>Medium</button>
+          <button className='game-button' onClick={() => {
+            setLevel(idArray.length)
+            setDisplayCards(idArray)
+            }}>Hard</button>
         </motion.div> : 
         gameOver ? 
           <div className='gameover'>
@@ -74,13 +88,13 @@ function App() {
           </button>
           </div> : 
           <div className='game'>
-            {(displayCards.length > 0) && (
+            {(displayCards.length > 0) && (clickedId.length != displayCards.length) && (
               <motion.h3 className='score' initial={{opacity: 0}} animate={{opacity: 1}}>
                 {clickedId.length}/{displayCards.length}
               </motion.h3>
             )}
             {(clickedId.length === displayCards.length) ?  
-              <motion.div className='win' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 1, type: 'spring', stiffness: 50}}>
+              <motion.div className='win' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5, type: 'spring', stiffness: 50}}>
                 <motion.h3 className='game-title'>You win</motion.h3>
                 <button className='game-button' onClick={() => {
                   setGameOver(false)
