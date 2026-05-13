@@ -2,6 +2,8 @@ import { useState, useRef  } from 'react'
 import { CardsDb } from './components/CardDatabase';
 import { motion } from 'motion/react';
 import DisplayCards from './components/DisplayCards'
+import logo from './assets/game-of-thrones-logo.png'
+import SignUpForm from './components/SignUpForm';
 import './App.css'
 
 function App() {
@@ -59,6 +61,13 @@ function App() {
 
   return (
     <>
+      <div className='nav'>
+        <div className='nav-logo'>
+          <img src={logo} alt="got-logo"/>
+        </div>
+        <input type="text" className='nav-search'/>
+        <button className='nav-button'>Log in</button>
+      </div>
       <div className='container hero'>
         {displayCards.length === 0 ? <motion.div className="level" initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
           <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
