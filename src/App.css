@@ -9,6 +9,10 @@
   height: 2rem;
 }
 
+.nav-button {
+  cursor: pointer;
+}
+
 .container {
   max-width: 100vw;
   min-height: 100vh;

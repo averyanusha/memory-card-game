@@ -9,19 +9,12 @@ import './App.css'
 function App() {
 
   const [idArray, setIdArray] = useState<number[]>(CardsDb.map((card) => card.id));
-
   const [level, setLevel] = useState<number>(0);
-
   const [clickedId, setClickedId] = useState<number[]>([]);
-
   const [displayCards, setDisplayCards] = useState<number[]>([]);
-
   const [gameOver, setGameOver] = useState<boolean>(false);
-
   const [flip, setFlip] = useState<boolean>(true);
-
-  const [win, setWin] = useState<boolean>(false);
-
+  const [showSignUp, setShowSignUp] = useState<boolean>(false);
   const timeout = useRef<number | null>(null);
 
   const handleClickedCards = (id: number) => {

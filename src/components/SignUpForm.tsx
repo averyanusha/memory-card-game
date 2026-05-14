@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const API_URL = 'http://localhost:3000'
 
@@ -44,12 +45,12 @@ export default function SignUpForm () {
     }
   }
   return (
-    <div className="sign-up">
+    <motion.div className="sign-up">
       <form onSubmit={handleSubmit} className="sign-up-form">
         <input type="email" className="sign-up-input" required name="email" placeholder="Enter your email"/>
         {!emailVerified ? <p>Enter valid email</p> : ''}
         <button className="sign-up-button">Continue</button>
       </form>
-    </div>
+    </motion.div>
   )
 }
