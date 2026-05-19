@@ -12,7 +12,6 @@ export default function Home() {
   const [displayCards, setDisplayCards] = useState<number[]>([]);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [flip, setFlip] = useState<boolean>(true);
-  const [showSignUp, setShowSignUp] = useState<boolean>(false);
   const timeout = useRef<number | null>(null);
 
   const handleClickedCards = (id: number) => {
