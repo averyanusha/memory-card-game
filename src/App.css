@@ -72,6 +72,11 @@
   cursor: pointer;
 }
 
+.sign-up-error {
+  color: rgb(197, 30, 30);
+  margin: 0.5rem 0;
+}
+
 .container {
   max-width: 100vw;
   min-height: 100vh;

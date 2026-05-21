@@ -1,6 +1,7 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import { Router } from 'express';
+import cors from 'cors';
 
 const app = express();
 
@@ -13,16 +14,22 @@ app.listen(PORT, (error) => {
   if(error)
     throw error;
 })
-
+app.use(cors());
+app.use(express.json());
 app.use('/user', userRouter);
 app.use('/email', emailRouter);
 app.use(express.urlencoded({ extended: true}));
-app.use(express.json());
 
-emailRouter.post('/', (req, res) => {
-  console.log(req.body);
-  res.json({ received: true });
-})
+emailRouter.post(
+  '/', 
+  body('email').isEmail().notEmpty(), 
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()){
+      return res.status(400).json({error: 'Enter a valid email'});
+    }
+    console.log(req.body)
+});
 
   // const result = validationResult(req);
   // if (result.isEmpty()){
