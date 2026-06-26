@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 import { Router } from 'express';
 import cors from 'cors';
 
+
 const app = express();
 
 const userRouter = Router();
@@ -20,15 +21,19 @@ app.use('/user', userRouter);
 app.use('/email', emailRouter);
 app.use(express.urlencoded({ extended: true}));
 
-emailRouter.post(
-  '/', 
-  body('email').isEmail().notEmpty(), 
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()){
-      return res.status(400).json({error: 'Enter a valid email'});
-    }
-    console.log(req.body)
+
+import findEmail from './db/pool.js';
+emailRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()){
+    return res.status(400).json({error: 'Enter a valid email'});
+  }
+  const { email } = req.body;
+  const result = await findEmail(email);
+  if (result.rows.length === 0) {
+    return res.json({login: false})
+  }
+  return res.json({login: true})
 });
 
   // const result = validationResult(req);

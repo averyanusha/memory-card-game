@@ -1,10 +1,7 @@
-import { Pool } from 'pg';
+import pg from 'pg';
+import { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } from './config.js';
+const { Pool } = pg;
 
-const DB_HOST = process.env.DB_HOST;
-const DB_PORT = Number(process.env.DB_PORT);
-const DB_USER = process.env.DB_USER;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_NAME = process.env.DB_NAME;
 
 const pool = new Pool({
   host: DB_HOST,
@@ -13,3 +10,10 @@ const pool = new Pool({
   password: DB_PASSWORD,
   database: DB_NAME
 });
+
+console.log(pool.options);
+
+export default async function findEmail (param: string){
+  const result = await pool.query('SELECT * FROM users WHERE email = $1', [param]);
+  return result;
+}
