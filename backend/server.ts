@@ -6,7 +6,7 @@ import cors from 'cors';
 
 const app = express();
 
-const userRouter = Router();
+const loginRouter = Router();
 const emailRouter = Router();
 const PORT = 3000;
 
@@ -17,7 +17,7 @@ app.listen(PORT, (error) => {
 })
 app.use(cors());
 app.use(express.json());
-app.use('/user', userRouter);
+app.use('/login', loginRouter);
 app.use('/email', emailRouter);
 app.use(express.urlencoded({ extended: true}));
 
@@ -36,6 +36,9 @@ emailRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
   return res.json({login: true})
 });
 
+loginRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
+  const { email, password } = req.body;
+})
   // const result = validationResult(req);
   // if (result.isEmpty()){
   //   return res.send('Enter valid email')

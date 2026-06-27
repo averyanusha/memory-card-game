@@ -37,13 +37,16 @@
   max-width: 300px;
   margin: 0 auto;
   text-align: center;
-  color: white;
 }
 
 .modal-title {
   font-weight: bold;
-  margin-bottom: 2rem;
-  font-size: 3rem;
+  font-size: 2rem;
+}
+
+.modal-subtitle {
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 
 .modal-close {
