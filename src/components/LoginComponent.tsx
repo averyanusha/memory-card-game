@@ -27,10 +27,11 @@ export default function LoginForm({email} : {email: string}) {
   return (
     <motion.div className="sign-up">
       <h1 className="modal-title">Log in</h1>
-      <h2 className="modal-subtitle">Looks like the user with such email already exists</h2>
+      <h2 className="modal-subtitle">Looks like the user with this email already exists</h2>
       <form onSubmit={handleLogin}>
         <input type="email" value={email} name="email" className="sign-up-input"/>
         <input type="password" placeholder="Enter your password" name="password" className="sign-up-input" onChange={(e) => {setPassword(e.target.value)}}/>
+        <button type="submit" className="sign-up-button">Log in</button>
       </form>
     </motion.div>
   )

@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
-import SignUpForm from "./SignUpForm";
 
 
 export default function Home() {

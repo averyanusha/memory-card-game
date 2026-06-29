@@ -78,6 +78,7 @@
 .sign-up-error {
   color: rgb(197, 30, 30);
   margin: 0.5rem 0;
+  font-size: 0.8rem;
 }
 
 .container {

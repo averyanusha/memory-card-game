@@ -29,7 +29,7 @@ const modal: Variants = {
 export default function Modal ({showModal, setShowModal} : {showModal: boolean, setShowModal: (value: boolean) => void}) {
   const [email, setEmail] = useState<string>('');
   const [emailVerified, setEmailVerified] = useState<boolean>(true);
-  const [userExists, setUserExists] = useState<boolean>(false);
+  const [userExists, setUserExists] = useState<boolean | null>(null);
   const [displayError, setDisplayError] = useState<string | null>(null);
 
 
@@ -84,7 +84,7 @@ export default function Modal ({showModal, setShowModal} : {showModal: boolean, 
       { showModal && (
         <motion.div className='backdrop' variants={backdrop} animate='visible' initial='hidden' exit='hidden'>
           <motion.div className='modal' variants={modal} animate='visible' initial='hidden'>
-            {email ? (userExists ? <LoginForm email={email} /> : <SignUpForm email={email}/>) : (
+            {userExists === null ? (
               <motion.div className="sign-up">
                 <h1 className="modal-title">Sign in</h1>
                 <form onSubmit={verifyEmailExists} className="sign-up-form" noValidate>
@@ -92,7 +92,7 @@ export default function Modal ({showModal, setShowModal} : {showModal: boolean, 
                   {(!emailVerified || displayError != null) ? <motion.p className="sign-up-error" transition={{stiffness: 150}} animate={{opacity: 1, display: 'block'}} initial={{opacity: 0, display: 'none'}}>Enter a valid email</motion.p> : null}
                   <button type="submit" className="sign-up-button">Continue</button>
                 </form>
-              </motion.div>)}
+              </motion.div>) : userExists ? <LoginForm email={email} /> : <SignUpForm email={email}/>}
             <button className='modal-close' onClick={() => setShowModal(false)}>X</button>
           </motion.div>
         </motion.div>
@@ -100,6 +100,7 @@ export default function Modal ({showModal, setShowModal} : {showModal: boolean, 
     </AnimatePresence>
   )
 }
+
 
 // export default function Modal ({ children, onClose }: { children: React.ReactNode, onClose: () => void }) {
 //   return (
