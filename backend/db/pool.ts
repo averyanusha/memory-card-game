@@ -8,12 +8,7 @@ const pool = new Pool({
   port: DB_PORT,
   user: DB_USER,
   password: DB_PASSWORD,
-  database: DB_NAME
+  database: DB_NAME,
 });
 
-console.log(pool.options);
-
-export default async function findEmail (param: string){
-  const result = await pool.query('SELECT * FROM users WHERE email = $1', [param]);
-  return result;
-}
+export default pool;
