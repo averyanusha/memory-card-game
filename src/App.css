@@ -81,6 +81,34 @@
   font-size: 0.8rem;
 }
 
+.password-wrapper {
+  position: relative;
+}
+
+.password-button {
+	min-height: 20px;
+	min-width: 20px;
+	position: absolute;
+	right: 10%;
+  transform: translateY(-50%);
+	background-repeat: no-repeat;
+	background-position: left top;
+	cursor: pointer;
+}
+
+
+.password-visible {
+  top: 60%;
+  background-image: url('./img/password-visible.svg');
+  background-size: contain;
+}
+
+.password-hidden {
+  top: 70%;
+  background-image: url('./img/password-hidden.svg');
+  background-size: contain;
+}
+
 .container {
   max-width: 100vw;
   min-height: 100vh;

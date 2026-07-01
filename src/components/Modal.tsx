@@ -26,7 +26,7 @@ const modal: Variants = {
   }
 }
 
-export default function Modal ({showModal, setShowModal} : {showModal: boolean, setShowModal: (value: boolean) => void}) {
+export default function Modal ({showModal, setShowModal, setIsLoggedIn} : {showModal: boolean, setShowModal: (value: boolean) => void, setIsLoggedIn: (value: boolean) => void}) {
   const [email, setEmail] = useState<string>('');
   const [emailVerified, setEmailVerified] = useState<boolean>(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
@@ -92,7 +92,7 @@ export default function Modal ({showModal, setShowModal} : {showModal: boolean, 
                   {(!emailVerified || displayError != null) ? <motion.p className="sign-up-error" transition={{stiffness: 150}} animate={{opacity: 1, display: 'block'}} initial={{opacity: 0, display: 'none'}}>Enter a valid email</motion.p> : null}
                   <button type="submit" className="sign-up-button">Continue</button>
                 </form>
-              </motion.div>) : userExists ? <LoginForm email={email} /> : <SignUpForm email={email}/>}
+              </motion.div>) : userExists ? <LoginForm email={email} onSuccess={() => setIsLoggedIn(true)}/> : <SignUpForm email={email} onSuccess={() => setIsLoggedIn(true)}/>}
             <button className='modal-close' onClick={() => setShowModal(false)}>X</button>
           </motion.div>
         </motion.div>
