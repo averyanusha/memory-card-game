@@ -18,7 +18,7 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
       });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('sign in token', data.signInToken);
         onSuccess();
       }
     } catch (error){

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { AnimatePresence, motion} from 'framer-motion';
 import type { Variants } from 'framer-motion';
+import { AuthContext } from './layouts/RootLayout';
 import LoginForm from "./LoginComponent";
 import SignUpForm from './SignUpForm';
 const API_URL = 'http://localhost:3000'
@@ -26,11 +27,15 @@ const modal: Variants = {
   }
 }
 
-export default function Modal ({showModal, setShowModal, setIsLoggedIn} : {showModal: boolean, setShowModal: (value: boolean) => void, setIsLoggedIn: (value: boolean) => void}) {
+export default function Modal ({showModal, setShowModal} : {showModal: boolean, setShowModal: (value: boolean) => void}) {
   const [email, setEmail] = useState<string>('');
   const [emailVerified, setEmailVerified] = useState<boolean>(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [displayError, setDisplayError] = useState<string | null>(null);
+  const authState = useContext(AuthContext);
+
+  if(!authState) 
+    return null;
 
 
   async function emailSend(email: string){
@@ -92,7 +97,13 @@ export default function Modal ({showModal, setShowModal, setIsLoggedIn} : {showM
                   {(!emailVerified || displayError != null) ? <motion.p className="sign-up-error" transition={{stiffness: 150}} animate={{opacity: 1, display: 'block'}} initial={{opacity: 0, display: 'none'}}>Enter a valid email</motion.p> : null}
                   <button type="submit" className="sign-up-button">Continue</button>
                 </form>
-              </motion.div>) : userExists ? <LoginForm email={email} onSuccess={() => setIsLoggedIn(true)}/> : <SignUpForm email={email} onSuccess={() => setIsLoggedIn(true)}/>}
+              </motion.div>) : userExists ? <LoginForm email={email} onSuccess={() => {
+                authState.setIsLoggedIn(true); 
+                setShowModal(false)
+                }}/> : <SignUpForm email={email} onSuccess={() => {
+                  authState.setIsLoggedIn(true);
+                  setShowModal(false)
+                  }}/>}t
             <button className='modal-close' onClick={() => setShowModal(false)}>X</button>
           </motion.div>
         </motion.div>

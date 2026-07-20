@@ -1,18 +1,30 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import Navbar from '../pages/Navbar';
 import Modal from '../Modal';
-import Profile from '../pages/Profile';
-import { useEffect, useState } from 'react';
-const API_URL = 'http://localhost:3000'
+import { useEffect, useState, createContext } from 'react';
+const API_URL = 'http://localhost:3000';
+
+type Auth = {
+  isLoggedIn: boolean,
+  setIsLoggedIn: (value: boolean) => void
+}
+
+type User = {
+  username: string,
+  setUserName: (value: string) => void
+}
+
+export const AuthContext = createContext<Auth | null >(null);
+export const UserContext = createContext<User | null >(null);
 
 
 export default function RootLayout(){
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>('')
+  const [username, setUserName] = useState<string>('')
   useEffect(() => {
     const checkIfTokenExists = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sign in token');
       if (!token)
         return;
 
@@ -25,17 +37,18 @@ export default function RootLayout(){
       const data = await response.json();
       if(response.ok) {
         setIsLoggedIn(true);
-        setUsername(data.username)
+        setUserName(data.username)
       }
     }
     checkIfTokenExists();
   }, [])
   return (
-    <div className='root-element'>
-      <Navbar setIsModalOpen={setShowModal}/>
-      <Outlet />
-      {showModal && <Modal showModal={showModal} setShowModal={setShowModal} setIsLoggedIn={setIsLoggedIn}/>}
-      {isLoggedIn && <Profile name={username}/>}
-    </div>
+    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
+      <UserContext.Provider value={{username, setUserName}}>
+        <Navbar setIsModalOpen={setShowModal}/>
+        <Outlet />
+        {showModal && <Modal showModal={showModal} setShowModal={setShowModal}/>}
+      </UserContext.Provider>
+    </AuthContext.Provider>
   )
 }

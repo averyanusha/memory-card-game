@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import jwt, { type VerifyErrors, type JwtPayload } from 'jsonwebtoken';
 import pool from './db/pool.js'
 import { JWT_SECRET } from './db/config.js';
+import { Resend } from 'resend';
 
 
 const app = express();
@@ -15,6 +16,7 @@ const emailRouter = Router();
 const signUpRouter = Router();
 const verifyRouter = Router();
 const PORT = 3000;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.listen(PORT, (error) => {
   console.log('Server listening on port 3000')
@@ -84,14 +86,14 @@ loginRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
   if (!passwordCheck) {
     return res.status(401).json({ error: 'Invalid credentials'});
   }
-  const token = jwt.sign (
+  const signInToken = jwt.sign (
     {
       userId: user.id, 
       username: user.username
     }, JWT_SECRET,
-    { expiresIn: '5h' }
+    { expiresIn: '15h' }
   );
-  res.json({token});
+  res.json({signInToken});
 })
 
 signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
@@ -101,14 +103,33 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
   const result = await pool.query(`INSERT INTO users (email, password_hash, username) VALUES ($1, $2, $3) RETURNING id`, [email, hashedPassword, username]);
 
   const userId = result.rows[0].id;
-  const token = jwt.sign (
+  const signInToken = jwt.sign (
     {
       userId: userId, 
       username: username
     }, JWT_SECRET,
     { expiresIn: '5h' }
   );
-  res.json({token});
+
+  const emailVerifyToken = jwt.sign (
+    {
+      userId: userId
+    }, JWT_SECRET,
+    { expiresIn: '30m'}
+  );
+
+  const { data, error } = await resend.emails.send({
+    from: "Memory card game []",
+    to: [email],
+    subject: `Hello ${username}`,
+    html: "<strong>Welcome aboard</strong>",
+  });
+
+  if (error) {
+    return res.status(400).json({error});
+  }
+
+  res.json({signInToken});
 })
 
 verifyRouter.get('/', authenticateToken, async (req, res) => {

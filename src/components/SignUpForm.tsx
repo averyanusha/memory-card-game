@@ -1,4 +1,4 @@
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 const API_URL = 'http://localhost:3000'
 
@@ -25,7 +25,7 @@ export default function SignUpForm ({email, onSuccess} : {email: string, onSucce
       })
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', data.token)
+        localStorage.setItem('sign in token', data.signInToken)
         onSuccess();
       }
     } catch (error){
