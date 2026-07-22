@@ -4,6 +4,7 @@ import Faq from './components/pages/Faq';
 import './App.css'
 import Profile from './components/pages/Profile';
 import Home from './components/Home';
+import VerifyEmail from './components/VerifyEmail';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: 'profile',
         element: <Profile/>
+      },
+      {
+        path: 'confirm-email/:token',
+        element: <VerifyEmail />
       }
     ]
   }

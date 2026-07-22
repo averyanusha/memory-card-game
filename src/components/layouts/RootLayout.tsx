@@ -2,6 +2,7 @@ import { Outlet, Link } from 'react-router-dom';
 import Navbar from '../pages/Navbar';
 import Modal from '../Modal';
 import { useEffect, useState, createContext } from 'react';
+import Profile from '../pages/Profile';
 const API_URL = 'http://localhost:3000';
 
 type Auth = {
@@ -14,9 +15,20 @@ type User = {
   setUserName: (value: string) => void
 }
 
+type Modal = {
+  showModal: boolean,
+  setShowModal: (value: boolean) => void
+}
+
+type CardsDisplay = {
+  displayCards: number[],
+  setDisplayCards: (value: number[]) => void
+}
+
 export const AuthContext = createContext<Auth | null >(null);
 export const UserContext = createContext<User | null >(null);
-
+export const ModalContext = createContext<Modal | null >(null);
+export const DisplayCards = createContext<CardsDisplay | null >(null)
 
 export default function RootLayout(){
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -45,9 +57,12 @@ export default function RootLayout(){
   return (
     <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <UserContext.Provider value={{username, setUserName}}>
-        <Navbar setIsModalOpen={setShowModal}/>
-        <Outlet />
-        {showModal && <Modal showModal={showModal} setShowModal={setShowModal}/>}
+        <ModalContext.Provider value={{showModal, setShowModal}}>
+          <Navbar/>
+          <Outlet />
+          {showModal && <Modal />}
+          {username.length > 1 && <Profile />}
+        </ModalContext.Provider>
       </UserContext.Provider>
     </AuthContext.Provider>
   )

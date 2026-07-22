@@ -15,6 +15,7 @@ const loginRouter = Router();
 const emailRouter = Router();
 const signUpRouter = Router();
 const verifyRouter = Router();
+const comfirmEmailRouter = Router();
 const PORT = 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -27,6 +28,9 @@ app.use(cors());
 app.use(express.json());
 app.use('/login', loginRouter);
 app.use('/email', emailRouter);
+app.use('/signup', signUpRouter);
+app.use('/verify', verifyRouter);
+app.use('confirm-email', comfirmEmailRouter);
 app.use(express.urlencoded({ extended: true}));
 
 //Middleware
@@ -111,7 +115,7 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
     { expiresIn: '5h' }
   );
 
-  const emailVerifyToken = jwt.sign (
+  const emailConfirmToken = jwt.sign (
     {
       userId: userId
     }, JWT_SECRET,
@@ -122,7 +126,7 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
     from: "Memory card game []",
     to: [email],
     subject: `Hello ${username}`,
-    html: "<strong>Welcome aboard</strong>",
+    html: `<strong>Welcome aboard</strong>To confirm your email, click<a href="http://localhost:5173/confirm-email/${emailConfirmToken}">here</a>`,
   });
 
   if (error) {
@@ -133,5 +137,10 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
 })
 
 verifyRouter.get('/', authenticateToken, async (req, res) => {
-  res.json(req.user)
+  res.json(req.user);
+})
+
+comfirmEmailRouter.get('/', authenticateToken, async (req, res) => {
+  const userVerified = await pool.query(`UPDATE users SET verified = $1 WHERE id = $2`, [true, req.user?.userId])
+  res.sendStatus(200);
 })

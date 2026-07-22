@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { AnimatePresence, motion} from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { AuthContext } from './layouts/RootLayout';
+import { AuthContext, ModalContext } from './layouts/RootLayout';
 import LoginForm from "./LoginComponent";
 import SignUpForm from './SignUpForm';
 const API_URL = 'http://localhost:3000'
@@ -27,16 +27,20 @@ const modal: Variants = {
   }
 }
 
-export default function Modal ({showModal, setShowModal} : {showModal: boolean, setShowModal: (value: boolean) => void}) {
+export default function Modal () {
   const [email, setEmail] = useState<string>('');
   const [emailVerified, setEmailVerified] = useState<boolean>(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [displayError, setDisplayError] = useState<string | null>(null);
   const authState = useContext(AuthContext);
+  const modalOpen = useContext(ModalContext);
+  const emailRef = useRef<HTMLInputElement | null>(null);
 
-  if(!authState) 
-    return null;
-
+  useEffect(() => {
+    if (!emailRef.current)
+      return;
+    emailRef.current.focus()
+  }, [])
 
   async function emailSend(email: string){
     try {
@@ -86,25 +90,25 @@ export default function Modal ({showModal, setShowModal} : {showModal: boolean, 
   }
   return (
     <AnimatePresence mode='wait'>
-      { showModal && (
+      { modalOpen?.showModal && (
         <motion.div className='backdrop' variants={backdrop} animate='visible' initial='hidden' exit='hidden'>
           <motion.div className='modal' variants={modal} animate='visible' initial='hidden'>
             {userExists === null ? (
               <motion.div className="sign-up">
                 <h1 className="modal-title">Sign in</h1>
                 <form onSubmit={verifyEmailExists} className="sign-up-form" noValidate>
-                  <input type="email" className="sign-up-input" name="email" placeholder="Email"/>
+                  <input type="email" className="sign-up-input" name="email" placeholder="Email" ref={emailRef}/>
                   {(!emailVerified || displayError != null) ? <motion.p className="sign-up-error" transition={{stiffness: 150}} animate={{opacity: 1, display: 'block'}} initial={{opacity: 0, display: 'none'}}>Enter a valid email</motion.p> : null}
                   <button type="submit" className="sign-up-button">Continue</button>
                 </form>
               </motion.div>) : userExists ? <LoginForm email={email} onSuccess={() => {
-                authState.setIsLoggedIn(true); 
-                setShowModal(false)
+                authState?.setIsLoggedIn(true); 
+                modalOpen?.setShowModal(false)
                 }}/> : <SignUpForm email={email} onSuccess={() => {
-                  authState.setIsLoggedIn(true);
-                  setShowModal(false)
+                  authState?.setIsLoggedIn(true);
+                  modalOpen?.setShowModal(false)
                   }}/>}t
-            <button className='modal-close' onClick={() => setShowModal(false)}>X</button>
+            <button className='modal-close' onClick={() => modalOpen?.setShowModal(false)}>X</button>
           </motion.div>
         </motion.div>
       )}
