@@ -3,6 +3,7 @@ import Navbar from '../pages/Navbar';
 import Modal from '../Modal';
 import { useEffect, useState, createContext } from 'react';
 import Profile from '../pages/Profile';
+import Home from '../Home';
 const API_URL = 'http://localhost:3000';
 
 type Auth = {
@@ -60,8 +61,9 @@ export default function RootLayout(){
         <ModalContext.Provider value={{showModal, setShowModal}}>
           <Navbar/>
           <Outlet />
-          {showModal && <Modal />}
-          {username.length > 1 && <Profile />}
+            <Home />
+            {showModal && <Modal />}
+            {username.length > 1 && <Profile />}
         </ModalContext.Provider>
       </UserContext.Provider>
     </AuthContext.Provider>

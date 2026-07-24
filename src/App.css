@@ -23,6 +23,13 @@
   color: black;
 }
 
+.nav-search {
+  padding: 5px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
+}
+
 .backdrop {
   position: fixed;
   top: 0;
@@ -191,4 +198,87 @@
 
 .score {
   font-size: 2rem;
+}
+
+.profile {
+  display: flex;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+.profile-left {
+  flex: 1 1 0%;
+}
+
+.profile-sidebar {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-height: 100vh;
+}
+
+.profile-right {
+  flex: 4 1 0%;
+  padding: 2rem;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: left;
+}
+
+.profile-image {
+  width: 10rem;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
+}
+
+.profile-info {
+  padding: 1rem;
+}
+
+.profile-title {
+  font-size: 3rem;
+}
+
+.profile-subtitle {
+  margin: 0.5rem;
+  color: rgb(178, 178, 178);
+}
+
+.profile-level {
+  text-align: right;
+  margin: 2rem 0;
+}
+
+.level-background {
+  background-color: rgb(219, 219, 219);
+  min-height: 10px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
+}
+
+.lever-bar {
+  background-color: burlywood;
+  border-radius: 10px;
+  min-height: 10px;
+}
+
+.profile-gains {
+  display: flex;
+}
+
+.profile-gains div {
+  min-width: 30%;
+  margin: 2rem 1rem 2rem 0;
+  padding: 1rem 3rem;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
+  text-align: left;
 }
