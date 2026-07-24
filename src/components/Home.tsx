@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
+const API_URL = 'http://localhost:3000'
 
 
 export default function Home() {
@@ -12,6 +13,22 @@ export default function Home() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [flip, setFlip] = useState<boolean>(true);
   const timeout = useRef<number | null>(null);
+
+  const saveScoreInDb= async() => {
+    const token = localStorage.getItem('sign in token');
+    const score = clickedId.length;
+    if (!token){
+      localStorage.setItem('score', JSON.stringify(score));
+    }
+    const response = await fetch(`${API_URL}/save-score`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({score})
+    })
+  }
 
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');

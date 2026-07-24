@@ -29,12 +29,12 @@ type CardsDisplay = {
 export const AuthContext = createContext<Auth | null >(null);
 export const UserContext = createContext<User | null >(null);
 export const ModalContext = createContext<Modal | null >(null);
-export const DisplayCards = createContext<CardsDisplay | null >(null)
+export const DisplayCards = createContext<CardsDisplay | null >(null);
 
 export default function RootLayout(){
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [username, setUserName] = useState<string>('')
+  const [username, setUserName] = useState<string>('');
   useEffect(() => {
     const checkIfTokenExists = async () => {
       const token = localStorage.getItem('sign in token');
@@ -44,13 +44,13 @@ export default function RootLayout(){
       const response = await fetch(`${API_URL}/verify`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer${token}`
+          'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json();
       if(response.ok) {
         setIsLoggedIn(true);
-        setUserName(data.username)
+        setUserName(data.username);
       }
     }
     checkIfTokenExists();
@@ -61,9 +61,7 @@ export default function RootLayout(){
         <ModalContext.Provider value={{showModal, setShowModal}}>
           <Navbar/>
           <Outlet />
-            <Home />
-            {showModal && <Modal />}
-            {username.length > 1 && <Profile />}
+          {showModal && <Modal />}
         </ModalContext.Provider>
       </UserContext.Provider>
     </AuthContext.Provider>

@@ -19,6 +19,24 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('sign in token', data.signInToken);
+        const score = localStorage.getItem('score');
+        if (score) {
+          const saveScoreInDb= async(token: string) => {
+            const response = await fetch(`${API_URL}/save-score`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({score})
+            })
+            const data = await response.json();
+            if (response.ok) {
+              localStorage.removeItem('score');
+            }
+          }
+          saveScoreInDb(data.signInToken);
+        }
         onSuccess();
       }
     } catch (error){

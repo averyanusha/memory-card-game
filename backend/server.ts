@@ -15,6 +15,7 @@ const loginRouter = Router();
 const emailRouter = Router();
 const signUpRouter = Router();
 const verifyRouter = Router();
+const scoreRouter = Router();
 const comfirmEmailRouter = Router();
 const PORT = 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -31,6 +32,7 @@ app.use('/email', emailRouter);
 app.use('/signup', signUpRouter);
 app.use('/verify', verifyRouter);
 app.use('confirm-email', comfirmEmailRouter);
+app.use('/save-score', scoreRouter);
 app.use(express.urlencoded({ extended: true}));
 
 //Middleware
@@ -143,4 +145,9 @@ verifyRouter.get('/', authenticateToken, async (req, res) => {
 comfirmEmailRouter.get('/', authenticateToken, async (req, res) => {
   const userVerified = await pool.query(`UPDATE users SET verified = $1 WHERE id = $2`, [true, req.user?.userId])
   res.sendStatus(200);
+})
+
+scoreRouter.post('/', authenticateToken, async (req, res) => {
+  const { score } = req.body;
+  const userId = req.user?.userId;
 })
