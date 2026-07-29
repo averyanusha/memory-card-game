@@ -1,10 +1,40 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../layouts/RootLayout";
+const API_URL = 'http://localhost:3000'
+
+type scoreType = {
+  score: number,
+  created_at: string
+}
 
 export default function Profile () {
   const user = useContext(UserContext);
   const maxXp = 8000;
   const [xp, setXp] = useState<number>(1080);
+  const [scores, setScores] = useState<scoreType[]>([]);
+
+  useEffect(() => {
+    async function getScore() {
+      const token = localStorage.getItem('sign in token')
+      try {
+        const response = await fetch(`${API_URL}/get-score`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        const data = await response.json();
+        if (response.ok) {
+          setScores(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getScore();
+  }, []);
+
   return (
     <>
       <div className='container'>
@@ -43,8 +73,20 @@ export default function Profile () {
               <div className="achievements">
                 <h2>Achievements</h2>
               </div>
-              <div className="inventory">
-                <h2>Inventory</h2>
+              <div className="history">
+                <h2>Score history</h2>
+                {scores?.map((entry, entryIndex) => {
+                  return (
+                    <div className="" key={entryIndex}>
+                      <ul>
+                        <li>{entry.score}</li>
+                      </ul>
+                      <ul>
+                        <li>{entry.created_at}</li>
+                      </ul>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, use } from "react";
 import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
@@ -14,21 +14,33 @@ export default function Home() {
   const [flip, setFlip] = useState<boolean>(true);
   const timeout = useRef<number | null>(null);
 
-  const saveScoreInDb= async() => {
-    const token = localStorage.getItem('sign in token');
-    const score = clickedId.length;
-    if (!token){
-      localStorage.setItem('score', JSON.stringify(score));
+  useEffect(() => {
+    const saveResultInDb= async() => {
+      if (clickedId.length !== displayCards.length && !gameOver)
+        return;
+      const token = localStorage.getItem('sign in token');
+      const score = clickedId.length;
+      const result = gameOver ? 'lose' : 'win';
+      if (!token){
+        localStorage.setItem('score', JSON.stringify(score));
+      }
+      const response = await fetch(`${API_URL}/save-score`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({score, result})
+      })
+
+      const data = await response.json();
+
+      if(response.ok) {
+        localStorage.removeItem('score');
+      }
     }
-    const response = await fetch(`${API_URL}/save-score`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({score})
-    })
-  }
+    saveResultInDb();
+  }, [clickedId])
 
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');
@@ -82,7 +94,7 @@ export default function Home() {
           setDisplayCards(idArray)
           }}>Hard</button>
       </motion.div> : 
-      gameOver ? 
+      gameOver ? (
         <div className='gameover'>
         <h2 className='game-title'>Gameover</h2>
         <p className='game-subtitle'>You lose!</p>
@@ -93,14 +105,14 @@ export default function Home() {
           }}>
             Start Over
         </button>
-        </div> : 
+        </div> ): 
         <div className='game'>
           {(displayCards.length > 0) && (clickedId.length != displayCards.length) && (
             <motion.h3 className='score' initial={{opacity: 0}} animate={{opacity: 1}}>
               {clickedId.length}/{displayCards.length}
             </motion.h3>
           )}
-          {(clickedId.length === displayCards.length) ?  
+          {(clickedId.length === displayCards.length) ? ( 
             <motion.div className='win' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5, type: 'spring', stiffness: 50}}>
               <motion.h3 className='game-title'>You win</motion.h3>
               <button className='game-button' onClick={() => {
@@ -110,7 +122,7 @@ export default function Home() {
                 }}>
                   Start Over
               </button>
-            </motion.div>
+            </motion.div>)
           :
           <DisplayCards displayCards={displayCards} flip={flip} setFlip={setFlip} timeout={timeout} handleClickedCards={handleClickedCards}/>
           }

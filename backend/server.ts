@@ -17,6 +17,7 @@ const signUpRouter = Router();
 const verifyRouter = Router();
 const scoreRouter = Router();
 const comfirmEmailRouter = Router();
+const getScoreRouter = Router();
 const PORT = 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -33,6 +34,7 @@ app.use('/signup', signUpRouter);
 app.use('/verify', verifyRouter);
 app.use('confirm-email', comfirmEmailRouter);
 app.use('/save-score', scoreRouter);
+app.use('/get-score', getScoreRouter);
 app.use(express.urlencoded({ extended: true}));
 
 //Middleware
@@ -143,11 +145,31 @@ verifyRouter.get('/', authenticateToken, async (req, res) => {
 })
 
 comfirmEmailRouter.get('/', authenticateToken, async (req, res) => {
-  const userVerified = await pool.query(`UPDATE users SET verified = $1 WHERE id = $2`, [true, req.user?.userId])
-  res.sendStatus(200);
-})
+  try { 
+    await pool.query(`UPDATE users SET verified = $1 WHERE id = $2`, [true, req.user?.userId])
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(500);
+  }
+});
 
 scoreRouter.post('/', authenticateToken, async (req, res) => {
-  const { score } = req.body;
+  const { score, result } = req.body;
   const userId = req.user?.userId;
+  try {
+    await pool.query(`INSERT INTO scores (score, user_id, result) VALUES ($1, $2, $3)`, [score, userId, result]);
+    res.json({ saved: true});
+  } catch (error) {
+    res.status(500).json({saved: false});
+  }
+});
+
+getScoreRouter.get('/', authenticateToken, async(req, res) => {
+  const userId = req.user?.userId
+  try {
+    const result = await pool.query(`SELECT score, created_at, result FROM scores WHERE user_id = $1`, [userId])
+    res.json( result.rows )
+  } catch (error){
+    res.status(500).json({error: 'No score has been stored'})
+  }
 })
