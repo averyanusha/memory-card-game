@@ -107,7 +107,7 @@ export default function Modal () {
                 }}/> : <SignUpForm email={email} onSuccess={() => {
                   authState?.setIsLoggedIn(true);
                   modalOpen?.setShowModal(false)
-                  }}/>}t
+                  }}/>}
             <button className='modal-close' onClick={() => modalOpen?.setShowModal(false)}>X</button>
           </motion.div>
         </motion.div>

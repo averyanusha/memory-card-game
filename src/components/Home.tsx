@@ -1,11 +1,13 @@
-import { useRef, useState, useEffect, use } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
+import { ModalContext } from "./layouts/RootLayout";
 const API_URL = 'http://localhost:3000'
 
 
 export default function Home() {
+  const modal = useContext(ModalContext);
   const [idArray, setIdArray] = useState<number[]>(CardsDb.map((card) => card.id));
   const [level, setLevel] = useState<number>(0);
   const [clickedId, setClickedId] = useState<number[]>([]);
@@ -16,13 +18,17 @@ export default function Home() {
 
   useEffect(() => {
     const saveResultInDb= async() => {
-      if (clickedId.length !== displayCards.length && !gameOver)
+      const isWin = displayCards.length > 0 && clickedId.length === displayCards.length;
+      if (!isWin && !gameOver)
         return;
+      console.log('SAVING', clickedId.length);
       const token = localStorage.getItem('sign in token');
       const score = clickedId.length;
       const result = gameOver ? 'lose' : 'win';
       if (!token){
         localStorage.setItem('score', JSON.stringify(score));
+        modal?.setShowModal(true);
+        return;
       }
       const response = await fetch(`${API_URL}/save-score`, {
         method: 'POST',
@@ -40,7 +46,7 @@ export default function Home() {
       }
     }
     saveResultInDb();
-  }, [clickedId])
+  }, [clickedId, gameOver])
 
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');
