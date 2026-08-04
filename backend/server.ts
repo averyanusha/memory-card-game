@@ -154,10 +154,10 @@ comfirmEmailRouter.get('/', authenticateToken, async (req, res) => {
 });
 
 scoreRouter.post('/', authenticateToken, async (req, res) => {
-  const { score, result } = req.body;
+  const { score, result, level } = req.body;
   const userId = req.user?.userId;
   try {
-    await pool.query(`INSERT INTO scores (score, user_id, result) VALUES ($1, $2, $3)`, [score, userId, result]);
+    await pool.query(`INSERT INTO scores (user_id, score, result, level) VALUES ($1, $2, $3, $4)`, [userId, score, result, level]);
     res.json({ saved: true});
   } catch (error) {
     res.status(500).json({saved: false});

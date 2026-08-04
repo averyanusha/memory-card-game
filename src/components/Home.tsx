@@ -1,20 +1,20 @@
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect, useContext, createContext } from "react";
 import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
-import { ModalContext } from "./layouts/RootLayout";
+import { ModalContext, GameContext } from "./layouts/RootLayout";
 const API_URL = 'http://localhost:3000'
-
 
 export default function Home() {
   const modal = useContext(ModalContext);
   const [idArray, setIdArray] = useState<number[]>(CardsDb.map((card) => card.id));
-  const [level, setLevel] = useState<number>(0);
-  const [clickedId, setClickedId] = useState<number[]>([]);
-  const [displayCards, setDisplayCards] = useState<number[]>([]);
+  const [level, setLevel] = useState<string>('');
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [flip, setFlip] = useState<boolean>(true);
   const timeout = useRef<number | null>(null);
+  const cards = useContext(GameContext);
+  if (!cards) throw new Error('CardContext used outside its provider');
+  const {displayCards, setDisplayCards, clickedId, setClickedId} = cards;
 
   useEffect(() => {
     const saveResultInDb= async() => {
@@ -36,7 +36,7 @@ export default function Home() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({score, result})
+        body: JSON.stringify({score, result, level})
       })
 
       const data = await response.json();
@@ -56,7 +56,7 @@ export default function Home() {
       savedIds.push(id);
       setClickedId(savedIds);
       localStorage.setItem('ids', JSON.stringify(savedIds));
-      shuffleSlice(level);
+      shuffleSlice(displayCards.length);
     } else {
       setGameOver(true);
     }
@@ -79,8 +79,8 @@ export default function Home() {
     return array;
   }
 
-  const shuffleSlice = (level: number) => {
-    setDisplayCards(shuffle(idArray).slice(0, level))
+  const shuffleSlice = (difficulty: number) => {
+    setDisplayCards(shuffle(idArray).slice(0, difficulty));
   }
 
   return (
@@ -88,15 +88,15 @@ export default function Home() {
       {displayCards.length === 0 ? <motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
         <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
         <button className='game-button' onClick={() => {
-          setLevel(5);
+          setLevel('easy');
           shuffleSlice(5);
           }}>Easy</button>
         <button className='game-button' onClick={() => {
-          setLevel(10);
+          setLevel('medium');
           shuffleSlice(10);
           }}>Medium</button>
         <button className='game-button' onClick={() => {
-          setLevel(idArray.length)
+          setLevel('hard')
           setDisplayCards(idArray)
           }}>Hard</button>
       </motion.div> : 
@@ -130,7 +130,7 @@ export default function Home() {
               </button>
             </motion.div>)
           :
-          <DisplayCards displayCards={displayCards} flip={flip} setFlip={setFlip} timeout={timeout} handleClickedCards={handleClickedCards}/>
+          <DisplayCards flip={flip} setFlip={setFlip} timeout={timeout} handleClickedCards={handleClickedCards}/>
           }
         </div>
       }

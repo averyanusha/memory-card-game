@@ -1,14 +1,18 @@
+import { useState, useContext } from 'react';
 import { CardsDb } from './CardDatabase';
 import { motion } from 'motion/react'
 import backOfTheCard from '../assets/cards-cover.jpg'
+import { GameContext } from './layouts/RootLayout';
 
-export default function DisplayCards ({displayCards, flip, setFlip, timeout, handleClickedCards}: {
-  displayCards: number[],
+export default function DisplayCards ({flip, setFlip, timeout, handleClickedCards}: {
   flip: boolean,
   setFlip: (value : boolean) => void,
   timeout: React.RefObject <number | null>,
-  handleClickedCards: (id: number) => void
-}) {
+  handleClickedCards: (id: number) => void}) {
+
+  const cards = useContext(GameContext);
+  if (!cards) throw new Error('CardContext used outside its provider');
+  const {displayCards, setDisplayCards} = cards;
   return (
     <div className='cards'>
       {displayCards.map((id, index) => {

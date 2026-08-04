@@ -2,8 +2,6 @@ import { Outlet, Link } from 'react-router-dom';
 import Navbar from '../pages/Navbar';
 import Modal from '../Modal';
 import { useEffect, useState, createContext } from 'react';
-import Profile from '../pages/Profile';
-import Home from '../Home';
 const API_URL = 'http://localhost:3000';
 
 type Auth = {
@@ -21,15 +19,18 @@ type Modal = {
   setShowModal: (value: boolean) => void
 }
 
-type CardsDisplay = {
+type GameState = {
   displayCards: number[],
-  setDisplayCards: (value: number[]) => void
+  setDisplayCards: (value: number[]) => void,
+  clickedId: number[],
+  setClickedId: (value: number[]) => void,
+  resetCards: () => void
 }
 
+export const GameContext = createContext<GameState | null>(null);
 export const AuthContext = createContext<Auth | null >(null);
 export const UserContext = createContext<User | null >(null);
 export const ModalContext = createContext<Modal | null >(null);
-export const DisplayCards = createContext<CardsDisplay | null >(null);
 
 export default function RootLayout(){
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -55,13 +56,31 @@ export default function RootLayout(){
     }
     checkIfTokenExists();
   }, [])
+
+  function GameStateProvider({children} : { children: React.ReactNode }) {
+    const [displayCards, setDisplayCards] = useState<number[]>([]);
+    const [clickedId, setClickedId] = useState<number[]>([]);
+
+    const resetCards = () => {
+      localStorage.setItem('ids', JSON.stringify([]));
+      setDisplayCards([]);
+      setClickedId([]);
+    }
+
+    return (
+      <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards}}>{children}</GameContext.Provider>
+    )
+  }
+
   return (
     <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <UserContext.Provider value={{username, setUserName}}>
         <ModalContext.Provider value={{showModal, setShowModal}}>
-          <Navbar/>
-          <Outlet />
-          {showModal && <Modal />}
+          <GameStateProvider>
+            <Navbar/>
+            <Outlet />
+            {showModal && <Modal />}
+          </GameStateProvider>
         </ModalContext.Provider>
       </UserContext.Provider>
     </AuthContext.Provider>

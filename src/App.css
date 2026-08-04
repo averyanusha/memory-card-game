@@ -280,5 +280,10 @@
   border-radius: 10px;
   border: none;
   box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
-  text-align: left;
+  text-align: center;
+}
+
+.history-scores {
+  display: flex;
+  justify-content: space-evenly;
 }

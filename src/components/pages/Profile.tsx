@@ -35,6 +35,10 @@ export default function Profile () {
     getScore();
   }, []);
 
+  function countXp(storedScore: number, result: string) {
+    const bonusRules = {5: 0, 10: 1.5, 15: 2};
+  }
+
   return (
     <>
       <div className='container'>
@@ -59,7 +63,7 @@ export default function Profile () {
             <div className='profile-header'>
               <img src="/src/assets/profile-image.jpg" alt="profile-image" className="profile-image"/>
               <div className="profile-info">
-                <h1 className="profile-title">{`Welcome, Name Placeholder ${user?.username}`}</h1>
+                <h1 className="profile-title">{`Welcome,${user?.username}`}</h1>
                 <p className="profile-subtitle">the title of the player</p>
                 <div className="profile-level">
                   <p className="profile-subtitle">{xp}/{maxXp}xp</p>
@@ -77,12 +81,12 @@ export default function Profile () {
                 <h2>Score history</h2>
                 {scores?.map((entry, entryIndex) => {
                   return (
-                    <div className="" key={entryIndex}>
+                    <div className="history-scores" key={entryIndex}>
                       <ul>
                         <li>{entry.score}</li>
                       </ul>
                       <ul>
-                        <li>{entry.created_at}</li>
+                        <li>{entry.created_at.split('T')[0]}</li>
                       </ul>
                     </div>
                   )
