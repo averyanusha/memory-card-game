@@ -167,9 +167,11 @@ scoreRouter.post('/', authenticateToken, async (req, res) => {
 getScoreRouter.get('/', authenticateToken, async(req, res) => {
   const userId = req.user?.userId
   try {
-    const result = await pool.query(`SELECT score, created_at, result FROM scores WHERE user_id = $1`, [userId])
-    res.json( result.rows )
+    const result = await pool.query(`SELECT score, created_at, result FROM scores WHERE user_id = $1`, [userId]);
+    const countXp = await pool.query(`SELECT SUM (score * 5 * CASE WHEN level = 'easy' THEN 0 WHEN level = 'medium' THEN 1.5 WHEN level = 'hard' THEN 2 END) AS total_xp FROM scores WHERE user_id = $1`, [userId]);
+    res.json({ historicScore: result.rows, totalXp: countXp.rows[0].total_xp})
   } catch (error){
+    console.log(error);
     res.status(500).json({error: 'No score has been stored'})
   }
 })

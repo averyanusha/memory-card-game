@@ -46,7 +46,7 @@ export default function Home() {
       }
     }
     saveResultInDb();
-  }, [clickedId, gameOver])
+  }, [clickedId, gameOver]);
 
   const handleClickedCards = (id: number) => {
     const stored = localStorage.getItem('ids');

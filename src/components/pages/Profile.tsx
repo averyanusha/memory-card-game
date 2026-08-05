@@ -10,7 +10,7 @@ type scoreType = {
 export default function Profile () {
   const user = useContext(UserContext);
   const maxXp = 8000;
-  const [xp, setXp] = useState<number>(1080);
+  const [xp, setXp] = useState<number>(0);
   const [scores, setScores] = useState<scoreType[]>([]);
 
   useEffect(() => {
@@ -26,7 +26,8 @@ export default function Profile () {
         })
         const data = await response.json();
         if (response.ok) {
-          setScores(data);
+          setScores(data.historicScore);
+          setXp(data.totalXp)
         }
       } catch (error) {
         console.log(error);
@@ -34,10 +35,6 @@ export default function Profile () {
     }
     getScore();
   }, []);
-
-  function countXp(storedScore: number, result: string) {
-    const bonusRules = {5: 0, 10: 1.5, 15: 2};
-  }
 
   return (
     <>
