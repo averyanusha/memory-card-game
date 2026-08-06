@@ -3,7 +3,7 @@ import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
 import { ModalContext, GameContext } from "./layouts/RootLayout";
-const API_URL = 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Home() {
   const modal = useContext(ModalContext);

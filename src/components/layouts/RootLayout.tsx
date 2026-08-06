@@ -2,7 +2,7 @@ import { Outlet, Link } from 'react-router-dom';
 import Navbar from '../pages/Navbar';
 import Modal from '../Modal';
 import { useEffect, useState, createContext } from 'react';
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 type Auth = {
   isLoggedIn: boolean,

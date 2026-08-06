@@ -4,7 +4,7 @@ import type { Variants } from 'framer-motion';
 import { AuthContext, ModalContext } from './layouts/RootLayout';
 import LoginForm from "./LoginComponent";
 import SignUpForm from './SignUpForm';
-const API_URL = 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL;
 
 const backdrop = {
   visible: { opacity: 1 },

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-const API_URL = 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SignUpForm ({email, onSuccess} : {email: string, onSuccess:() => void}) {
   const [ username, setUsername ] = useState<string>('');

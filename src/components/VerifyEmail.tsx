@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Navigate, replace } from "react-router-dom";
 import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "./layouts/RootLayout";
-const API_URL = 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function VerifyEmail(){
   const { token } = useParams();
