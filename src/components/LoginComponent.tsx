@@ -47,7 +47,6 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
   return (
     <motion.div className="sign-up">
       <h1 className="modal-title">Log in</h1>
-      <h2 className="modal-subtitle">Looks like the user with this email already exists</h2>
       <form className="modal-form" onSubmit={handleLogin}>
         <input type="email" value={email} name="email" className="sign-up-input"/>
         <div className="password-wrapper">
