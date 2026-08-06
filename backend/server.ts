@@ -127,10 +127,10 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
   );
 
   const { data, error } = await resend.emails.send({
-    from: "Memory card game []",
+    from: "Memory card game <onboarding@resend.dev>",
     to: [email],
     subject: `Hello ${username}`,
-    html: `<strong>Welcome aboard</strong>To confirm your email, click<a href="http://localhost:5173/confirm-email/${emailConfirmToken}">here</a>`,
+    html: `<strong>Welcome aboard!</strong> To confirm your email, click <a href="${process.env.FRONTEND_URL}/confirm-email/${emailConfirmToken}">here</a>`,
   });
 
   if (error) {
