@@ -1,10 +1,10 @@
 import pg from 'pg';
-import { DB_URL } from './config.js';
+import { DATABASE_URL } from './config.js';
 const { Pool } = pg;
 
 
 const pool = new Pool({
-  connectionString: DB_URL
+  connectionString: DATABASE_URL
 });
 
 export default pool;
