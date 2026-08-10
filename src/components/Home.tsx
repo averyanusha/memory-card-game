@@ -14,7 +14,7 @@ export default function Home() {
   const timeout = useRef<number | null>(null);
   const cards = useContext(GameContext);
   if (!cards) throw new Error('CardContext used outside its provider');
-  const {displayCards, setDisplayCards, clickedId, setClickedId} = cards;
+  const {displayCards, setDisplayCards, clickedId, setClickedId, resetCards} = cards;
 
   useEffect(() => {
     const saveResultInDb= async() => {
@@ -62,12 +62,6 @@ export default function Home() {
     }
   }
 
-  const resetClickedCards = () => {
-    setClickedId([]);
-    localStorage.setItem('ids', JSON.stringify([]));
-    timeout.current && clearTimeout(timeout.current);
-  }
-
 
   // Fisher-Yates shuffle algorithm 
 
@@ -106,7 +100,7 @@ export default function Home() {
         <p className='game-subtitle'>You lose!</p>
         <button className='game-button' onClick={() => {
           setGameOver(false)
-          resetClickedCards()
+          resetCards();
           setDisplayCards([]);
           }}>
             Start Over
@@ -123,7 +117,7 @@ export default function Home() {
               <motion.h3 className='game-title'>You win</motion.h3>
               <button className='game-button' onClick={() => {
                 setGameOver(false)
-                resetClickedCards()
+                resetCards();
                 setDisplayCards([]);
                 }}>
                   Start Over

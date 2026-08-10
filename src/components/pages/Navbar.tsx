@@ -22,7 +22,7 @@ export default function Navbar() {
       </NavLink>
       <input type='text' className='nav-search'/>
       <NavLink to='/faq' className='nav-button'>Help</NavLink>
-      <button className='nav-button profile-button' onClick={() => {logged?.isLoggedIn ? handleNavigate('/profile') : modalOpen?.setShowModal(true)}}></button>
+      <button className='nav-button profile-button' onClick={() => {logged?.isLoggedIn ? (handleNavigate('/profile'), resetCards()) : modalOpen?.setShowModal(true)}}></button>
       <button className='nav-button' onClick={() => {handleNavigate('/'), resetCards()}}>Start the game</button>
     </div>
   )
