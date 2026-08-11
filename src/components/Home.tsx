@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useContext, createContext } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
 import DisplayCards from "./DisplayCards";
@@ -79,7 +79,7 @@ export default function Home() {
 
   return (
     <div className='container hero'>
-      {displayCards.length === 0 ? <motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
+      {displayCards.length === 0 ? (resetCards(), <motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
         <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
         <button className='game-button' onClick={() => {
           setLevel('easy');
@@ -90,10 +90,10 @@ export default function Home() {
           shuffleSlice(10);
           }}>Medium</button>
         <button className='game-button' onClick={() => {
-          setLevel('hard')
+          setLevel('hard');
           setDisplayCards(idArray)
           }}>Hard</button>
-      </motion.div> : 
+      </motion.div>) : 
       gameOver ? (
         <div className='gameover'>
         <h2 className='game-title'>Gameover</h2>

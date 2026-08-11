@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../layouts/RootLayout";
+import { supabase } from "../../supabase";
 const API_URL = import.meta.env.VITE_API_URL;
 
 type scoreType = {
@@ -12,10 +13,11 @@ export default function Profile () {
   const maxXp = 8000;
   const [xp, setXp] = useState<number>(0);
   const [scores, setScores] = useState<scoreType[]>([]);
+  const [profileImg, setProfileImg] = useState<string>('');
+  const token = localStorage.getItem('sign in token');
 
   useEffect(() => {
     async function getScore() {
-      const token = localStorage.getItem('sign in token')
       try {
         const response = await fetch(`${API_URL}/get-score`, {
           method: 'GET',
@@ -33,8 +35,51 @@ export default function Profile () {
         console.log(error);
       }
     }
+    async function getAvatar() {
+      try {
+        const response = await fetch (`${API_URL}/avatar`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        const data = await response.json();
+        if (response.ok) {
+          setProfileImg(data.avatarUrl);
+        }
+      } catch (error){
+        console.log(error);
+      }
+    }
     getScore();
+    getAvatar();
   }, []);
+
+  const handleImgUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if(!file)
+      return;
+
+    const filePath = `${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from('avatars').upload(filePath, file, {upsert: true});
+    const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+    const avatarUrl = data.publicUrl;
+    setProfileImg(avatarUrl);
+
+    try {
+      const response = await fetch(`${API_URL}/avatar`, {
+        method: 'POST',
+        headers: {
+          'Content-type' :'application/json',
+          'Authentication': `Bearer ${token}`
+        },
+        body: JSON.stringify({avatarUrl})
+      }) 
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -58,7 +103,10 @@ export default function Profile () {
           </div>
           <div className='profile-right'>
             <div className='profile-header'>
-              <img src="/src/assets/profile-image.jpg" alt="profile-image" className="profile-image"/>
+              <label htmlFor='image-upload' className="custom-image-upload">
+                <img src={profileImg ? profileImg : '/src/assets/profile-image.jpg'} alt="profile-image" className="profile-image"/>
+              </label>
+              <input name='photo' id="image-upload" type='file' accept='.png, .jpg, .jpeg' onChange={handleImgUpload} className="profile-image-upload"/>
               <div className="profile-info">
                 <h1 className="profile-title">{`Welcome,${user?.username}`}</h1>
                 <p className="profile-subtitle">the title of the player</p>

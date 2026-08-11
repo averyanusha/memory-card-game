@@ -18,6 +18,7 @@ const verifyRouter = Router();
 const scoreRouter = Router();
 const comfirmEmailRouter = Router();
 const getScoreRouter = Router();
+const avatarRouter = Router();
 const PORT = 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -35,6 +36,7 @@ app.use('/verify', verifyRouter);
 app.use('confirm-email', comfirmEmailRouter);
 app.use('/save-score', scoreRouter);
 app.use('/get-score', getScoreRouter);
+app.use('/avatar', avatarRouter);
 app.use(express.urlencoded({ extended: true}));
 
 //Middleware
@@ -165,7 +167,7 @@ scoreRouter.post('/', authenticateToken, async (req, res) => {
 });
 
 getScoreRouter.get('/', authenticateToken, async(req, res) => {
-  const userId = req.user?.userId
+  const userId = req.user?.userId;
   try {
     const result = await pool.query(`SELECT score, created_at, result FROM scores WHERE user_id = $1`, [userId]);
     const countXp = await pool.query(`SELECT SUM (score * 5 * CASE WHEN level = 'easy' THEN 0 WHEN level = 'medium' THEN 1.5 WHEN level = 'hard' THEN 2 END) AS total_xp FROM scores WHERE user_id = $1`, [userId]);
@@ -173,5 +175,27 @@ getScoreRouter.get('/', authenticateToken, async(req, res) => {
   } catch (error){
     console.log(error);
     res.status(500).json({error: 'No score has been stored'})
+  }
+});
+
+avatarRouter.post('/', authenticateToken, async(req, res) => {
+  const userId = req.user?.userId;
+  const { avatar } = req.body;
+  try {
+    await pool.query(`UPDATE users SET avatar_url = $1 WHERE id = 2$`, [avatar, userId]);
+    res.json({ saved: true});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error: 'Problem with storing avatar'});
+  }
+});
+
+avatarRouter.get('/', authenticateToken, async(req, res) => {
+  const userId = req.user?.userId;
+  try {
+    const avatarUrl = await pool.query(`SELECT avatar_url FROM users WHERE id = 1$`, [userId]);
+    res.json({ avatarUrl });
+  } catch (error) {
+    console.log(error);
   }
 })

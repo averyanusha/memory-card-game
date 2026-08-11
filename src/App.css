@@ -233,16 +233,28 @@
 .profile-header {
   display: flex;
   justify-content: left;
+  position: relative;
 }
 
 .profile-image {
-  width: 10rem;
-  object-fit: cover;
-  object-position: top;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-image-upload {
+  width: 12rem;
   border-radius: 10px;
   border: none;
   box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
+  cursor: pointer;
 }
+
+.profile-image-upload {
+  position: absolute;
+  bottom: 0;
+  display: none;
+}
+
 
 .profile-info {
   padding: 1rem;
