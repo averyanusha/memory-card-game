@@ -54,8 +54,8 @@ export default function Home() {
     savedIds = stored ? JSON.parse(stored) : [];
     if (!savedIds.find((el) => el === id)) {
       savedIds.push(id);
-      setClickedId(savedIds);
       localStorage.setItem('ids', JSON.stringify(savedIds));
+      setClickedId(savedIds);
       shuffleSlice(displayCards.length);
     } else {
       setGameOver(true);
@@ -79,17 +79,20 @@ export default function Home() {
 
   return (
     <div className='container hero'>
-      {displayCards.length === 0 ? (resetCards(), <motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
+      {displayCards.length === 0 ? (<motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
         <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
         <button className='game-button' onClick={() => {
+          localStorage.setItem('ids', JSON.stringify([]));
           setLevel('easy');
           shuffleSlice(5);
           }}>Easy</button>
         <button className='game-button' onClick={() => {
+          localStorage.setItem('ids', JSON.stringify([]));
           setLevel('medium');
           shuffleSlice(10);
           }}>Medium</button>
         <button className='game-button' onClick={() => {
+          localStorage.setItem('ids', JSON.stringify([]));
           setLevel('hard');
           setDisplayCards(idArray)
           }}>Hard</button>

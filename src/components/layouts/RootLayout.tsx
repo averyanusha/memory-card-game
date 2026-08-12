@@ -32,6 +32,21 @@ export const AuthContext = createContext<Auth | null >(null);
 export const UserContext = createContext<User | null >(null);
 export const ModalContext = createContext<Modal | null >(null);
 
+function GameStateProvider({children} : { children: React.ReactNode }) {
+  const [displayCards, setDisplayCards] = useState<number[]>([]);
+  const [clickedId, setClickedId] = useState<number[]>([]);
+
+  const resetCards = () => {
+    localStorage.setItem('ids', JSON.stringify([]));
+    setDisplayCards([]);
+    setClickedId([]);
+  }
+
+  return (
+    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards}}>{children}</GameContext.Provider>
+  )
+}
+
 export default function RootLayout(){
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -57,20 +72,6 @@ export default function RootLayout(){
     checkIfTokenExists();
   }, [])
 
-  function GameStateProvider({children} : { children: React.ReactNode }) {
-    const [displayCards, setDisplayCards] = useState<number[]>([]);
-    const [clickedId, setClickedId] = useState<number[]>([]);
-
-    const resetCards = () => {
-      localStorage.setItem('ids', JSON.stringify([]));
-      setDisplayCards([]);
-      setClickedId([]);
-    }
-
-    return (
-      <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards}}>{children}</GameContext.Provider>
-    )
-  }
 
   return (
     <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
