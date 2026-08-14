@@ -129,6 +129,27 @@
   padding: 1rem;
 }
 
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.loading-wrapper {
+  position: relative;
+  min-width: 50vw;
+}
+
+.loading-text {
+  position: absolute;
+  left: 50%;
+  font-size: 2rem;
+  color: rgb(162, 134, 92);
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
 .hero {
   background-image: url('assets/westeros-map.jpg');
   background-repeat: no-repeat;

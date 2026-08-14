@@ -27,7 +27,9 @@ export default function Home() {
       const result = gameOver ? 'lose' : 'win';
       if (!token){
         localStorage.setItem('score', JSON.stringify(score));
-        modal?.setShowModal(true);
+        setTimeout(() => {
+          modal?.setShowModal(true);
+        }, 500);
         return;
       }
       const response = await fetch(`${API_URL}/save-score`, {
@@ -62,6 +64,12 @@ export default function Home() {
     }
   }
 
+  const startGame = (level: string, count: number) => {
+    localStorage.setItem('ids', JSON.stringify([]));
+    setLevel(level);
+    shuffleSlice(count);
+  }
+
 
   // Fisher-Yates shuffle algorithm 
 
@@ -81,21 +89,9 @@ export default function Home() {
     <div className='container hero'>
       {displayCards.length === 0 ? (<motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
         <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
-        <button className='game-button' onClick={() => {
-          localStorage.setItem('ids', JSON.stringify([]));
-          setLevel('easy');
-          shuffleSlice(5);
-          }}>Easy</button>
-        <button className='game-button' onClick={() => {
-          localStorage.setItem('ids', JSON.stringify([]));
-          setLevel('medium');
-          shuffleSlice(10);
-          }}>Medium</button>
-        <button className='game-button' onClick={() => {
-          localStorage.setItem('ids', JSON.stringify([]));
-          setLevel('hard');
-          setDisplayCards(idArray)
-          }}>Hard</button>
+        <button className='game-button' onClick={() => {startGame('easy', 5)}}>Easy</button>
+        <button className='game-button' onClick={() => {startGame('medium', 10)}}>Medium</button>
+        <button className='game-button' onClick={() => {startGame('hard', 15)}}>Hard</button>
       </motion.div>) : 
       gameOver ? (
         <div className='gameover'>
