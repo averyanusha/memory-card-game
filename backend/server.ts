@@ -129,7 +129,7 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
   );
 
   const { data, error } = await resend.emails.send({
-    from: "Memory card game <onboarding@resend.dev>",
+    from: "Card Game <noreply@ianadev.com>",
     to: [email],
     subject: `Hello ${username}`,
     html: `<strong>Welcome aboard!</strong> To confirm your email, click <a href="${process.env.FRONTEND_URL}/confirm-email/${emailConfirmToken}">here</a>`,
