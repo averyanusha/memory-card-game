@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Navigate, replace } from "react-router-dom";
 import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "./layouts/RootLayout";
-const API_URL = import.meta.env.VITE_API_URL;
+const FRONTEND_URL = import.meta.env.FRONTEND_URL;
 
 export default function VerifyEmail(){
   const { token } = useParams();
@@ -11,7 +11,7 @@ export default function VerifyEmail(){
 
   useEffect(() => {
     const verifyToken = async () => {
-      const response = await fetch(`${API_URL}/confirm-email`, {
+      const response = await fetch(`${FRONTEND_URL}/confirm-email`, {
         method: "GET",
         headers: {
           'Authorization': `Bearer ${token}`
