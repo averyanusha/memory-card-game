@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
+import { VerifyEmailContext } from './layouts/RootLayout';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function LoginForm({email, onSuccess} : {email: string, onSuccess:() => void}) {
   const [ password, setPassword ] = useState<string>('');
   const [ passwordShow, setPasswordShow ] = useState<boolean>(false);
+  const emailVerify = useContext(VerifyEmailContext);
+  if (!emailVerify) return;
+  const {emailVerified, setEmailVerified} = emailVerify;
 
   async function handleLogin(event: React.SubmitEvent){
     try {
@@ -18,6 +22,7 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
       });
       const data = await response.json();
       if (response.ok) {
+        setEmailVerified(data.emailConfirmed);
         localStorage.setItem('sign in token', data.signInToken);
         const score = localStorage.getItem('score');
         if (score) {
@@ -38,6 +43,7 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
           saveScoreInDb(data.signInToken);
         }
         onSuccess();
+        setEmailVerified(data.verified);
       }
     } catch (error){
       console.log(error);

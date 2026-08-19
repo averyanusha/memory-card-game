@@ -135,6 +135,21 @@
   text-align: center;
 }
 
+
+.banner {
+  min-height: 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.banner-link {
+  cursor: pointer;
+  color: burlywood;
+}
+
 .loading {
   display: flex;
   align-items: center;

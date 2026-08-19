@@ -16,9 +16,10 @@ const emailRouter = Router();
 const signUpRouter = Router();
 const verifyRouter = Router();
 const scoreRouter = Router();
-const comfirmEmailRouter = Router();
+const confirmEmailRouter = Router();
 const getScoreRouter = Router();
 const avatarRouter = Router();
+const reconfirmEmailRouter = Router();
 const PORT = 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -33,10 +34,11 @@ app.use('/login', loginRouter);
 app.use('/email', emailRouter);
 app.use('/signup', signUpRouter);
 app.use('/verify', verifyRouter);
-app.use('confirm-email', comfirmEmailRouter);
+app.use('confirm-email', confirmEmailRouter);
 app.use('/save-score', scoreRouter);
 app.use('/get-score', getScoreRouter);
 app.use('/avatar', avatarRouter);
+app.use('reconfirm-email', reconfirmEmailRouter);
 app.use(express.urlencoded({ extended: true}));
 
 //Middleware
@@ -89,13 +91,14 @@ loginRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
 
   const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
   if (result.rows.length === 0) {
-    return res.status(401).json({ error: 'Email doesnt exist'});
+    return res.status(401).json({ error: 'Email does not exist'});
   }
   const user = result.rows[0];
   const passwordCheck = await bcrypt.compare(password, user.password_hash);
   if (!passwordCheck) {
     return res.status(401).json({ error: 'Invalid credentials'});
   }
+
   const signInToken = jwt.sign (
     {
       userId: user.id, 
@@ -103,7 +106,7 @@ loginRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
     }, JWT_SECRET,
     { expiresIn: '15h' }
   );
-  res.json({signInToken});
+  res.json({signInToken, emailVerified: user.verified});
 })
 
 signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
@@ -146,7 +149,7 @@ verifyRouter.get('/', authenticateToken, async (req, res) => {
   res.json(req.user);
 })
 
-comfirmEmailRouter.get('/', authenticateToken, async (req, res) => {
+confirmEmailRouter.get('/', authenticateToken, async (req, res) => {
   try { 
     await pool.query(`UPDATE users SET verified = $1 WHERE id = $2`, [true, req.user?.userId])
     res.sendStatus(200);
@@ -182,7 +185,7 @@ avatarRouter.post('/', authenticateToken, async(req, res) => {
   const userId = req.user?.userId;
   const { avatar } = req.body;
   try {
-    await pool.query(`UPDATE users SET avatar_url = $1 WHERE id = 2$`, [avatar, userId]);
+    await pool.query(`UPDATE users SET avatar_url = $1 WHERE id = $2`, [avatar, userId]);
     res.json({ saved: true});
   } catch (error) {
     console.log(error);
@@ -193,9 +196,36 @@ avatarRouter.post('/', authenticateToken, async(req, res) => {
 avatarRouter.get('/', authenticateToken, async(req, res) => {
   const userId = req.user?.userId;
   try {
-    const avatarUrl = await pool.query(`SELECT avatar_url FROM users WHERE id = 1$`, [userId]);
+    const avatarUrl = await pool.query(`SELECT avatar_url FROM users WHERE id = $1`, [userId]);
     res.json({ avatarUrl });
   } catch (error) {
     console.log(error);
   }
+});
+
+reconfirmEmailRouter.post('/', authenticateToken, async(req, res) => {
+  const userId = req.user?.userId;
+  const emailToken = jwt.sign (
+    {
+      userId: userId
+    }, JWT_SECRET,
+    { expiresIn: '30m'}
+  );
+
+  try {
+    const result = await pool.query(`SELECT email, username FROM users WHERE id = $1`, [userId]);
+    const { email, username } = result.rows[0];
+    const { data, error } = await resend.emails.send({
+      from: "Card Game <noreply@ianadev.com>",
+      to: [email],
+      subject: `Hello ${username}`,
+      html: `<strong>Verify your email</strong><br/>Click the button to confirm your email<br/><button style="padding: 10px, background-color=burlywood"><a href="${process.env.FRONTEND_URL}/confirm-email/${emailToken}">here</a></button>`,
+    });
+    if(error) res.status(400).json({error});
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+
 })

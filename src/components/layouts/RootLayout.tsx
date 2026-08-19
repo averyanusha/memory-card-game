@@ -1,7 +1,8 @@
 import { Outlet, Link } from 'react-router-dom';
-import Navbar from '../pages/Navbar';
+import Navbar from '../Navbar';
 import Modal from '../Modal';
 import LoadingPage from '../pages/LoadingPage';
+import Banner from '../Banner';
 import { useEffect, useState, createContext } from 'react';
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -28,10 +29,23 @@ type GameState = {
   resetCards: () => void
 }
 
+type VerifyBanner = {
+  bannerOpen: boolean,
+  setBannerOpen: (value: boolean) => void
+}
+
+type VerifyEmail = {
+  emailVerified: boolean,
+  setEmailVerified: (value: boolean) => void
+}
+
 export const GameContext = createContext<GameState | null>(null);
 export const AuthContext = createContext<Auth | null >(null);
 export const UserContext = createContext<User | null >(null);
 export const ModalContext = createContext<Modal | null >(null);
+export const BannerContext = createContext<VerifyBanner | null>(null);
+export const VerifyEmailContext = createContext<VerifyEmail | null>(null)
+
 
 function GameStateProvider({children} : { children: React.ReactNode }) {
   const [displayCards, setDisplayCards] = useState<number[]>([]);
@@ -49,10 +63,12 @@ function GameStateProvider({children} : { children: React.ReactNode }) {
 }
 
 export default function RootLayout(){
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [username, setUserName] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [ showModal, setShowModal ] = useState<boolean>(false);
+  const [ isLoggedIn, setIsLoggedIn ] = useState<boolean>(false);
+  const [ username, setUserName ] = useState<string>('');
+  const [ isLoading, setIsLoading ] = useState<boolean>(true);
+  const [ bannerOpen, setBannerOpen ] = useState<boolean>(true);
+  const [ emailVerified, setEmailVerified ] = useState<boolean>(false);
 
   useEffect(() => {
 
@@ -94,9 +110,14 @@ export default function RootLayout(){
       <UserContext.Provider value={{username, setUserName}}>
         <ModalContext.Provider value={{showModal, setShowModal}}>
           <GameStateProvider>
-            <Navbar/>
-            <Outlet />
-            {showModal && <Modal />}
+            <VerifyEmailContext.Provider value={{emailVerified, setEmailVerified}}>
+              <BannerContext.Provider value={{bannerOpen, setBannerOpen}}>
+                <Navbar/>
+                {isLoggedIn && !emailVerified && bannerOpen && <Banner />}
+                <Outlet />
+                {showModal && <Modal />}
+              </BannerContext.Provider>
+            </VerifyEmailContext.Provider>
           </GameStateProvider>
         </ModalContext.Provider>
       </UserContext.Provider>
