@@ -34,11 +34,11 @@ app.use('/login', loginRouter);
 app.use('/email', emailRouter);
 app.use('/signup', signUpRouter);
 app.use('/verify', verifyRouter);
-app.use('confirm-email', confirmEmailRouter);
+app.use('/confirm-email', confirmEmailRouter);
 app.use('/save-score', scoreRouter);
 app.use('/get-score', getScoreRouter);
 app.use('/avatar', avatarRouter);
-app.use('reconfirm-email', reconfirmEmailRouter);
+app.use('/reconfirm-email', reconfirmEmailRouter);
 app.use(express.urlencoded({ extended: true}));
 
 //Middleware
