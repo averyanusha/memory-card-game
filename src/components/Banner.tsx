@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import { VerifyEmailContext, BannerContext, UserContext } from './layouts/RootLayout';
-const API_URL = import.meta.env.VITE_APP_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Banner () {
   const emailVerify = useContext(VerifyEmailContext);
