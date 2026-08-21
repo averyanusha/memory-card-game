@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
-import { UserContext } from "../layouts/RootLayout";
+import { useNavigate } from "react-router-dom";
+import { UserContext, AuthContext } from "../layouts/RootLayout";
 import { supabase } from "../../supabase";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,6 +11,8 @@ type scoreType = {
 
 export default function Profile () {
   const user = useContext(UserContext);
+  const logged = useContext(AuthContext);
+  const navigate = useNavigate();
   const maxXp = 8000;
   const [xp, setXp] = useState<number>(0);
   const [scores, setScores] = useState<scoreType[]>([]);
@@ -81,6 +84,10 @@ export default function Profile () {
     }
   }
 
+  function handleNavigate(component: string){
+    navigate(component, {replace: true})
+  }
+
   return (
     <>
       <div className='container'>
@@ -98,6 +105,9 @@ export default function Profile () {
               </li>
               <li className='sidebar-element'>
                 <button>Settings</button>
+              </li>
+              <li className='sidebar-element'>
+                <button onClick={() => {logged?.setIsLoggedIn(false), handleNavigate('/home')}}>Log out</button>
               </li>
             </ul>
           </div>
