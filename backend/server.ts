@@ -219,7 +219,7 @@ reconfirmEmailRouter.post('/', authenticateToken, async(req, res) => {
       from: "Card Game <noreply@ianadev.com>",
       to: [email],
       subject: `Hello ${username}`,
-      html: `<strong>Verify your email</strong><br/>Click the button to confirm your email<br/><button style="padding: 10px, background-color=burlywood"><a href="${process.env.FRONTEND_URL}/confirm-email/${emailToken}">here</a></button>`,
+      html: `<strong>Verify your email</strong><br/>Click the button to confirm your email<br/><button style="padding: 10px, background-color=burlywood"><a href="${process.env.FRONTEND_URL}/reconfirm-email/${emailToken}">here</a></button>`,
     });
     if(error) res.status(400).json({error});
     res.sendStatus(200);
