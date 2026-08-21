@@ -48,7 +48,7 @@ export default function Banner () {
   }
 
   return (
-    <motion.div className="container banner" variants={banner} animate='visible' initial='hidden' exit='hidden'>
+    <motion.div className="banner" variants={banner} animate='visible' initial='hidden' exit='hidden'>
       <p className="banner-text">Email is not verified, click{' '}
         <button className="banner-link" onClick={verifyEmail}>here</button>
          {' '}to resend verification link

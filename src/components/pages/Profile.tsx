@@ -107,7 +107,7 @@ export default function Profile () {
                 <button>Settings</button>
               </li>
               <li className='sidebar-element'>
-                <button onClick={() => {logged?.setIsLoggedIn(false), handleNavigate('/home')}}>Log out</button>
+                <button onClick={() => {logged?.setIsLoggedIn(false), handleNavigate('/')}}>Log out</button>
               </li>
             </ul>
           </div>
