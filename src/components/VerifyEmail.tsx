@@ -32,12 +32,12 @@ export default function VerifyEmail(){
   }
 
   return (
-    <>
-      <h1>Thank you for confirming your email</h1>
-      <p>You will be redirected to your profile page shortly</p>
-      <p>If you were not redirected click
-        <button onClick={() => {handleNavigate()}}>here</button>
+    <div className="container">
+      <h1 className="game-title">Thank you for confirming your email</h1>
+      <p className="game-subtitle">You will be redirected to your profile page shortly</p>
+      <p className="game-subtitle">If you were not redirected click{(' ')}
+      <button onClick={() => {handleNavigate()}}>here</button>
       </p>
-    </>
+    </div>
   )
 }

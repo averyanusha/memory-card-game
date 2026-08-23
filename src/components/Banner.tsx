@@ -16,7 +16,6 @@ export default function Banner () {
       opacity: 0
     },
     visible: {
-      y: '8px',
       opacity: 1,
       transition: {
         delay: 0.3, 
