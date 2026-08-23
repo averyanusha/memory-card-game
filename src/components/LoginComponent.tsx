@@ -43,7 +43,7 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
           saveScoreInDb(data.signInToken);
         }
         onSuccess();
-        setEmailVerified(data.verified);
+        setEmailVerified(data.emailVerified);
       }
     } catch (error){
       console.log(error);
