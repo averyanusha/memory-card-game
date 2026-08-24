@@ -3,7 +3,7 @@ Game of thrones characters inspired full-stack memory game with user accounts, p
 
 🎮 **Live demo:** [card-game.ianadev.com](https://card-game.ianadev.com)
 
-(src/assets/game-prewatch.gif)
+| [Gameplay](src/assets/game-preview.gif)
 ---
 
 ## The game
@@ -75,8 +75,7 @@ DATABASE_URL=          # PostgreSQL connection string
 JWT_SECRET=            # secret used to sign tokens
 RESEND_API_KEY=        # transactional email
 SUPABASE_URL=          # avatar storage
-SUPABASE_KEY=
-CLIENT_URL=            # frontend origin, for CORS and email links
+FRONTED_URL=            # frontend origin, for CORS and email links
 ```
 
 ---

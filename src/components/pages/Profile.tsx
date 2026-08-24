@@ -114,7 +114,7 @@ export default function Profile () {
           <div className='profile-right'>
             <div className='profile-header'>
               <label htmlFor='image-upload' className="custom-image-upload">
-                <img src={profileImg ? profileImg : '/src/assets/profile-image.jpg'} alt="profile-image" className="profile-image"/>
+                <img src={profileImg.length > 1 ? profileImg : '/src/assets/profile-image.jpg'} alt="profile-image" className="profile-image"/>
               </label>
               <input name='photo' id="image-upload" type='file' accept='.png, .jpg, .jpeg' onChange={handleImgUpload} className="profile-image-upload"/>
               <div className="profile-info">
