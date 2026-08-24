@@ -75,7 +75,7 @@ export default function Profile () {
         method: 'POST',
         headers: {
           'Content-type' :'application/json',
-          'Authentication': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({avatarUrl})
       }) 
