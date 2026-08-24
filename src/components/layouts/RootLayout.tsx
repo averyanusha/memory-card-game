@@ -92,6 +92,8 @@ export default function RootLayout(){
         if(response.ok) {
           setIsLoggedIn(true);
           setUserName(data.username);
+          setEmailVerified(data.verified);
+          data.verified && setBannerOpen(false);
         }
       } catch (error) {
         console.log(error);
@@ -104,6 +106,8 @@ export default function RootLayout(){
 
   if (isLoading)
     return <LoadingPage />
+
+  console.log('banner check:', isLoggedIn, emailVerified, bannerOpen);
 
   return (
     <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>

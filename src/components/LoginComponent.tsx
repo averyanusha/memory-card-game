@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { VerifyEmailContext } from './layouts/RootLayout';
+import { VerifyEmailContext, AuthContext } from './layouts/RootLayout';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function LoginForm({email, onSuccess} : {email: string, onSuccess:() => void}) {
@@ -9,6 +9,9 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
   const emailVerify = useContext(VerifyEmailContext);
   if (!emailVerify) return;
   const {emailVerified, setEmailVerified} = emailVerify;
+  const loggin = useContext(AuthContext);
+  if (!loggin) return;
+  const {isLoggedIn, setIsLoggedIn} = loggin;
 
   async function handleLogin(event: React.SubmitEvent){
     try {
@@ -22,7 +25,7 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
       });
       const data = await response.json();
       if (response.ok) {
-        setEmailVerified(data.emailConfirmed);
+        setEmailVerified(data.verified);
         localStorage.setItem('sign in token', data.signInToken);
         const score = localStorage.getItem('score');
         if (score) {
@@ -43,7 +46,7 @@ export default function LoginForm({email, onSuccess} : {email: string, onSuccess
           saveScoreInDb(data.signInToken);
         }
         onSuccess();
-        setEmailVerified(data.emailVerified);
+        setIsLoggedIn(true);
       }
     } catch (error){
       console.log(error);

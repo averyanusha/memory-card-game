@@ -137,7 +137,7 @@
 
 
 .banner {
-  padding: 2rem;
+  padding: 1rem;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.5);
   display: flex;
@@ -148,6 +148,10 @@
 .banner-link {
   cursor: pointer;
   color: burlywood;
+}
+
+.banner-close {
+  cursor: pointer;
 }
 
 .loading {

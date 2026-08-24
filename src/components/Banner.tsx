@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import { VerifyEmailContext, BannerContext, UserContext } from './layouts/RootLayout';
 const API_URL = import.meta.env.VITE_API_URL;
@@ -16,6 +16,7 @@ export default function Banner () {
       opacity: 0
     },
     visible: {
+      y: '0',
       opacity: 1,
       transition: {
         delay: 0.3, 
@@ -47,12 +48,14 @@ export default function Banner () {
   }
 
   return (
-    <motion.div className="banner" variants={banner} animate='visible' initial='hidden' exit='hidden'>
-      <p className="banner-text">Email is not verified, click{' '}
-        <button className="banner-link" onClick={verifyEmail}>here</button>
-         {' '}to resend verification link
-      </p>
-      <button className="banner-close" onClick={() => bannerOpen?.setBannerOpen(false)}>X</button>
-    </motion.div>
+    <AnimatePresence>
+      <motion.div className="banner" variants={banner} animate='visible' initial='hidden' exit='hidden'>
+          <p className="banner-text">Email is not verified, click{' '}
+            <button className="banner-link" onClick={verifyEmail}>here</button>
+            {' '}to resend verification link
+          </p>
+          <button className="banner-close" onClick={() => bannerOpen?.setBannerOpen(false)}>X</button>
+      </motion.div>
+    </AnimatePresence>
   )
 }

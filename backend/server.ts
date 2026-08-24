@@ -106,7 +106,7 @@ loginRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
     }, JWT_SECRET,
     { expiresIn: '15h' }
   );
-  res.json({signInToken, emailVerified: user.verified});
+  res.json({signInToken, verified: user.verified});
 })
 
 signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
@@ -147,10 +147,17 @@ signUpRouter.post('/', body('email').isEmail().notEmpty(), async (req, res) => {
 
 verifyRouter.get('/', authenticateToken, async (req, res) => {
   res.json(req.user);
+  try {
+    const result = await pool.query(`SELECT verified FROM users WHERE id = $1`, [req.user?.userId]);
+    res.json({ userid: req.user?.userId, username: req.user?.username, verified: result.rows[0].verified })
+  } catch (error) {
+    console.log('User doesnt exist');
+    res.sendStatus(500);
+  }
 })
 
 confirmEmailRouter.get('/', authenticateToken, async (req, res) => {
-  try { 
+  try {
     await pool.query(`UPDATE users SET verified = $1 WHERE id = $2`, [true, req.user?.userId])
     res.sendStatus(200);
   } catch (error) {
