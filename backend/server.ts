@@ -7,6 +7,7 @@ import jwt, { type VerifyErrors, type JwtPayload } from 'jsonwebtoken';
 import pool from './db/pool.js'
 import { JWT_SECRET } from './db/config.js';
 import { Resend } from 'resend';
+import { cardsGenerateRouter } from './routes/cards.js';
 
 
 const app = express();
@@ -23,13 +24,9 @@ const reconfirmEmailRouter = Router();
 const PORT = 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-app.listen(PORT, (error) => {
-  console.log('Server listening on port 3000')
-  if(error)
-    throw error;
-})
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 app.use('/login', loginRouter);
 app.use('/email', emailRouter);
 app.use('/signup', signUpRouter);
@@ -39,7 +36,7 @@ app.use('/save-score', scoreRouter);
 app.use('/get-score', getScoreRouter);
 app.use('/avatar', avatarRouter);
 app.use('/reconfirm-email', reconfirmEmailRouter);
-app.use(express.urlencoded({ extended: true}));
+app.use('/generate-cards', cardsGenerateRouter);
 
 //Middleware
 
@@ -234,5 +231,11 @@ reconfirmEmailRouter.post('/', authenticateToken, async(req, res) => {
     console.log(error);
     res.sendStatus(500);
   }
+});
 
+
+app.listen(PORT, (error) => {
+  console.log('Server listening on port 3000')
+  if(error)
+    throw error;
 })
