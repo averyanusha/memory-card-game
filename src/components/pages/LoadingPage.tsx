@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 
 export default function LoadingPage() {
   const text = 'Loading...'
-  const loader = {
+  const loader: Variants = {
     hidden: {
       opacity: 1
     },

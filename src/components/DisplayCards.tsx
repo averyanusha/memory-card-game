@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react';
-import { CardsDb } from './CardDatabase';
 import { motion } from 'motion/react'
 import backOfTheCard from '../assets/cards-cover.jpg'
-import { GameContext } from './layouts/RootLayout';
+import { CardSetContext } from './contexts/Contexts';
+import { GameContext } from './contexts/GameState';
 
 export default function DisplayCards ({flip, setFlip, timeout, handleClickedCards}: {
   flip: boolean,
@@ -12,11 +12,14 @@ export default function DisplayCards ({flip, setFlip, timeout, handleClickedCard
 
   const cards = useContext(GameContext);
   if (!cards) throw new Error('CardContext used outside its provider');
-  const {displayCards, setDisplayCards} = cards;
+  const cardSet = useContext(CardSetContext);
+  if (!cardSet) throw new Error('CardSet context is outsode its provider');
+  const {displayCards} = cards;
+
   return (
     <div className='cards'>
       {displayCards.map((id, index) => {
-        const card = CardsDb.find(card => card.id === id)
+        const card = cardSet.cardDeck.find(card => card.id === id)
         if (!card)
           return null;
         return (

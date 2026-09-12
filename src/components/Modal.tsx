@@ -1,12 +1,12 @@
 import { useState, useContext, useRef, useEffect } from 'react';
 import { AnimatePresence, motion} from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { AuthContext, ModalContext } from './layouts/RootLayout';
+import { AuthContext, ModalContext } from './contexts/Contexts';
 import LoginForm from "./LoginComponent";
 import SignUpForm from './SignUpForm';
 const API_URL = import.meta.env.VITE_API_URL;
 
-const backdrop = {
+const backdrop: Variants = {
   visible: { opacity: 1 },
   hidden: { opacity: 0 },
 }

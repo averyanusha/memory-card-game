@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { VerifyEmailContext, AuthContext } from './layouts/RootLayout';
+import { VerifyEmailContext, AuthContext } from './contexts/Contexts';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function LoginForm({email, onSuccess} : {email: string, onSuccess:() => void}) {

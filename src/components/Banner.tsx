@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { VerifyEmailContext, BannerContext, UserContext } from './layouts/RootLayout';
+import { VerifyEmailContext, BannerContext, UserContext } from './contexts/Contexts';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Banner () {

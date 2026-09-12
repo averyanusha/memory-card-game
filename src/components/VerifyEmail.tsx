@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Navigate, replace } from "react-router-dom";
 import { useContext, useEffect, useRef } from "react";
-import { AuthContext } from "./layouts/RootLayout";
+import { AuthContext } from "./contexts/Contexts";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function VerifyEmail(){

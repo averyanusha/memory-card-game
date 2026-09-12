@@ -14,7 +14,7 @@ import brienneCard from '../assets/Brienne-tarth.jpg'
 import joffreyCard from '../assets/joffrey.jpg'
 import hodorCard from '../assets/Hodor.jpg'
 
-type Card = {
+export type Card = {
   id: number,
   name: string,
   image: string

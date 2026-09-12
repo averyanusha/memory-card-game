@@ -1,7 +1,8 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from './../assets/game-of-thrones-logo.png';
 import { useContext } from 'react';
-import { ModalContext, GameContext, AuthContext } from './layouts/RootLayout';
+import { ModalContext, AuthContext } from './contexts/Contexts';
+import { GameContext } from './contexts/GameState';
 
 export default function Navbar() {
   const modalOpen = useContext(ModalContext);

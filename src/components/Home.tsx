@@ -1,20 +1,18 @@
 import { useRef, useState, useEffect, useContext } from "react";
-import { CardsDb } from "./CardDatabase";
 import { motion } from 'framer-motion';
-import DisplayCards from "./DisplayCards";
-import { ModalContext, GameContext } from "./layouts/RootLayout";
+import { GameContext } from "./contexts/GameState";
+import { ModalContext } from "./contexts/Contexts";
+import LevelSelect from "./pages/LevelSelect";
+import ChooseTheme from "./pages/ChooseTheme";
+import Game from "./pages/Game";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Home() {
   const modal = useContext(ModalContext);
-  const [idArray, setIdArray] = useState<number[]>(CardsDb.map((card) => card.id));
-  const [level, setLevel] = useState<string>('');
-  const [gameOver, setGameOver] = useState<boolean>(false);
-  const [flip, setFlip] = useState<boolean>(true);
-  const timeout = useRef<number | null>(null);
   const cards = useContext(GameContext);
   if (!cards) throw new Error('CardContext used outside its provider');
-  const {displayCards, setDisplayCards, clickedId, setClickedId, resetCards} = cards;
+  const { displayCards, setDisplayCards, clickedId, resetCards, handleClickedCards, startGame, gameOver, setGameOver, level } = cards;
+  const [ theme, setTheme ] = useState<string>('');
 
   useEffect(() => {
     const saveResultInDb= async() => {
@@ -50,49 +48,13 @@ export default function Home() {
     saveResultInDb();
   }, [clickedId, gameOver]);
 
-  const handleClickedCards = (id: number) => {
-    const stored = localStorage.getItem('ids');
-    let savedIds: number[];
-    savedIds = stored ? JSON.parse(stored) : [];
-    if (!savedIds.find((el) => el === id)) {
-      savedIds.push(id);
-      localStorage.setItem('ids', JSON.stringify(savedIds));
-      setClickedId(savedIds);
-      shuffleSlice(displayCards.length);
-    } else {
-      setGameOver(true);
-    }
-  }
 
-  const startGame = (level: string, count: number) => {
-    localStorage.setItem('ids', JSON.stringify([]));
-    setLevel(level);
-    shuffleSlice(count);
-  }
-
-
-  // Fisher-Yates shuffle algorithm 
-
-  function shuffle(array: number[]) : number[]{
-    for (let i = array.length - 1; i > 0; i --) {
-      const random: number = Math.floor(Math.random() * (i + 1));
-      [array[i], array[random]] = [array[random], array[i]];
-    }
-    return array;
-  }
-
-  const shuffleSlice = (difficulty: number) => {
-    setDisplayCards(shuffle(idArray).slice(0, difficulty));
-  }
+  if (!theme)
+    return (<ChooseTheme theme={theme} setTheme={setTheme}/>)
 
   return (
     <div className='container hero'>
-      {displayCards.length === 0 ? (<motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
-        <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
-        <button className='game-button' onClick={() => {startGame('easy', 5)}}>Easy</button>
-        <button className='game-button' onClick={() => {startGame('medium', 10)}}>Medium</button>
-        <button className='game-button' onClick={() => {startGame('hard', 15)}}>Hard</button>
-      </motion.div>) : 
+      {displayCards.length === 0 ? <LevelSelect startGame={startGame}/> : 
       gameOver ? (
         <div className='gameover'>
         <h2 className='game-title'>Gameover</h2>
@@ -104,28 +66,8 @@ export default function Home() {
           }}>
             Start Over
         </button>
-        </div> ): 
-        <div className='game'>
-          {(displayCards.length > 0) && (clickedId.length != displayCards.length) && (
-            <motion.h3 className='score' initial={{opacity: 0}} animate={{opacity: 1}}>
-              {clickedId.length}/{displayCards.length}
-            </motion.h3>
-          )}
-          {(clickedId.length === displayCards.length) ? ( 
-            <motion.div className='win' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5, type: 'spring', stiffness: 50}}>
-              <motion.h3 className='game-title'>You win</motion.h3>
-              <button className='game-button' onClick={() => {
-                setGameOver(false)
-                resetCards();
-                setDisplayCards([]);
-                }}>
-                  Start Over
-              </button>
-            </motion.div>)
-          :
-          <DisplayCards flip={flip} setFlip={setFlip} timeout={timeout} handleClickedCards={handleClickedCards}/>
-          }
-        </div>
+        <button className="game-button">Choose a new theme</button>
+        </div> ): <Game setGameOver={setGameOver} handleClickedCards={handleClickedCards}/>
       }
     </div>
   )
