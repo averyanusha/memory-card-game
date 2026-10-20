@@ -39,8 +39,13 @@ export default function Banner () {
             'Authorization': `Bearer ${token}`
           },
         })
-        const data = await response.json();
         if(response.ok) {
+          const data = await response.json();
+        }
+        if (!response.ok) {
+          const errorMessage = await response.json();
+          console.log(errorMessage);
+          return errorMessage;
         }
       } catch (error) {
         console.log(error);

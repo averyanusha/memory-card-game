@@ -1,10 +1,12 @@
-import { Route, Routes, Link, createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import RootLayout from './components/layouts/RootLayout';
 import Faq from './components/pages/Faq';
 import './App.css'
 import Profile from './components/pages/Profile';
 import Home from './components/Home';
 import VerifyEmail from './components/VerifyEmail';
+import ChooseTheme from './components/pages/ChooseTheme';
+import LevelSelect from './components/pages/LevelSelect';
 
 const router = createBrowserRouter([
   {

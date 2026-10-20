@@ -7,7 +7,8 @@ import jwt, { type VerifyErrors, type JwtPayload } from 'jsonwebtoken';
 import pool from './db/pool.js'
 import { JWT_SECRET } from './db/config.js';
 import { Resend } from 'resend';
-import { cardsGenerateRouter } from './routes/cards.js';
+import { cardsGenerateRouter } from './routes/cards-prompt.js';
+import { imageGenerateRouter } from './routes/cards-images.js';
 
 
 const app = express();
@@ -37,7 +38,7 @@ app.use('/get-score', getScoreRouter);
 app.use('/avatar', avatarRouter);
 app.use('/reconfirm-email', reconfirmEmailRouter);
 app.use('/generate-cards', cardsGenerateRouter);
-
+app.use('/generate-images', imageGenerateRouter);
 //Middleware
 
 declare global {

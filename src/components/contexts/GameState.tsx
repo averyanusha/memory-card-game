@@ -1,6 +1,8 @@
 import { useState, createContext, useContext } from "react";
 import { CardSetContext } from "./Contexts";
 
+type GameStatus = 'playing' | 'won' | 'lost'
+
 type GameState = {
   displayCards: number[],
   setDisplayCards: (value: number[]) => void,
@@ -11,10 +13,14 @@ type GameState = {
   startGame: (level: string, count: number) => void,
   shuffle: (array: number[]) => number[],
   shuffleSlice: (difficulty: number) => void,
-  gameOver: boolean,
-  setGameOver: (value: boolean) => void,
   level: string,
   setLevel: (value: string) => void
+  theme: string,
+  setTheme: (value: string) => void,
+  isGenerating: boolean,
+  setIsGenerating: (value: boolean) => void,
+  gameStatus: GameStatus,
+  setGameStatus: (value: GameStatus) => void
 }
 
 
@@ -24,11 +30,13 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
   const [displayCards, setDisplayCards] = useState<number[]>([]);
   const [clickedId, setClickedId] = useState<number[]>([]);
   const [level, setLevel] = useState<string>('');
-  const [gameOver, setGameOver] = useState<boolean>(false);  
   const cardSet = useContext(CardSetContext);
   if (!cardSet) throw new Error('CardSet context is outsode its provider');
   const { cardDeck, setCardDeck } = cardSet;
   const idArray = (cardDeck.map((card) => card.id));
+  const [ theme, setTheme] = useState<string>('');
+  const [ isGenerating, setIsGenerating ] = useState<boolean>(false);
+  const [gameStatus, setGameStatus] = useState<GameStatus>('playing');
 
   const resetCards = () => {
     localStorage.setItem('ids', JSON.stringify([]));
@@ -45,8 +53,10 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
         localStorage.setItem('ids', JSON.stringify(savedIds));
         setClickedId(savedIds);
         shuffleSlice(displayCards.length);
+      } else if (clickedId.length === displayCards.length) {
+        setGameStatus('won')
       } else {
-        setGameOver(true);
+        setGameStatus('lost');
       }
   }
 
@@ -68,10 +78,11 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
     }
 
     const shuffleSlice = (difficulty: number) => {
+      console.log("shuffled:", shuffle([...idArray]).slice(0, difficulty));
       setDisplayCards(shuffle([...idArray]).slice(0, difficulty));
     }
 
   return (
-    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameOver, setGameOver, level, setLevel}}>{children}</GameContext.Provider>
+    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, isGenerating, setIsGenerating}}>{children}</GameContext.Provider>
   )
 }

@@ -47,8 +47,13 @@ export default function Profile () {
             'Authorization': `Bearer ${token}`
           }
         })
-        const data = await response.json();
+        if (!response.ok) {
+          const errorMessage = await response.json();
+          console.log(errorMessage);
+          return errorMessage;
+        }
         if (response.ok) {
+          const data = await response.json();
           setProfileImg(data.avatarUrl);
         }
       } catch (error){
@@ -78,7 +83,11 @@ export default function Profile () {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({avatarUrl})
-      }) 
+      })
+      if (response.ok) {
+        const data = await response.json();
+        setProfileImg(data.avatarUrl);
+      }
     } catch (error) {
       console.log(error);
     }
