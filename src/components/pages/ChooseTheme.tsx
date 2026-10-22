@@ -3,12 +3,10 @@ import { motion, type Variants } from "framer-motion";
 import { CardSetContext } from "../contexts/Contexts";
 import { GameContext } from "../contexts/GameState";
 import type {Card} from '../CardDatabase';
-import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:3000";
 
 export default function ChooseTheme() {
   const cardSet = useContext(CardSetContext);
-  const navigate = useNavigate();
   if (!cardSet)
     throw new Error('CardSetContext used outside its provider');
   const {cardDeck, setCardDeck} = cardSet;
@@ -38,8 +36,11 @@ export default function ChooseTheme() {
     imagePrompt: string
   }
 
+  interface GeneratedCards extends ApiCard {
+    imageUrl: string
+  }
+
   async function fetchTheme(selectedTheme: string) {
-    game?.setIsGenerating(true);
     try {
       const response = await fetch(`${API_URL}/generate-cards`, {
         method: 'POST',
@@ -58,11 +59,32 @@ export default function ChooseTheme() {
           }))
         )
         game?.setTheme(selectedTheme);
+        try {
+          console.log(`Generating images, theme for ${selectedTheme}`)
+          const imageResponse = await fetch(`${API_URL}/generate-images`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ theme: selectedTheme })
+          });
+          if (imageResponse.ok) {
+            const data: { cards: GeneratedCards[] } = await imageResponse.json();
+            console.log("data:", data);
+            setCardDeck(data.cards.map((card, i: number) => ({
+              id: i + 1,
+              name: card.name,
+              image: card.imageUrl
+            })))
+          } else {
+            throw new Error(`Something went wrong at image generation for ${selectedTheme}`)
+          }
+        } catch (error) {
+          console.error(error);
+        }
       }
     } catch (error) {
-      console.log(error)
-    } finally {
-      game?.setIsGenerating(false);
+      console.error(error)
     }
   }
 

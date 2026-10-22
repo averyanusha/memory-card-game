@@ -16,22 +16,6 @@ export default function DisplayCards ({flip, setFlip, timeout}: {
   if (!cardSet) throw new Error('CardSet context is outsode its provider');
   const {displayCards, theme, handleClickedCards} = cards;
 
-  async function getImages(){
-    try {
-      const response = await fetch(`${API_URL}/generate-images`, {
-        method: 'POST',
-        headers: {
-          'Content-type' : 'application/json'
-        },
-        body: JSON.stringify({theme})
-      })
-      if (response.ok) {
-      }
-    } catch (err) {
-      console.log('Error in getting images from db')
-    }
-  }
-
   return (
     <div className='cards'>
       {displayCards.map((id, index) => {
@@ -46,7 +30,7 @@ export default function DisplayCards ({flip, setFlip, timeout}: {
                 handleClickedCards(id)
                 setFlip(true)
                 }, 1000)}}>
-              <motion.img src={flip ? card.name : backOfTheCard} alt={card.name} className='card-img' transition={{type: 'spring', duration: 0.7, stiffness: 30}} animate={{rotateY: flip ? 0 : 180}}/>
+              <motion.img src={flip ? card.image : backOfTheCard} alt={card.name} className='card-img' transition={{type: 'spring', duration: 0.7, stiffness: 30}} animate={{rotateY: flip ? 0 : 180}}/>
             </button>
           </motion.div>
         )

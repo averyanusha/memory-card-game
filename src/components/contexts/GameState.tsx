@@ -18,7 +18,6 @@ type GameState = {
   theme: string,
   setTheme: (value: string) => void,
   isGenerating: boolean,
-  setIsGenerating: (value: boolean) => void,
   gameStatus: GameStatus,
   setGameStatus: (value: GameStatus) => void
 }
@@ -35,7 +34,7 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
   const { cardDeck, setCardDeck } = cardSet;
   const idArray = (cardDeck.map((card) => card.id));
   const [ theme, setTheme] = useState<string>('');
-  const [ isGenerating, setIsGenerating ] = useState<boolean>(false);
+  const isGenerating = cardDeck.every(el => el.image === '');
   const [gameStatus, setGameStatus] = useState<GameStatus>('playing');
 
   const resetCards = () => {
@@ -83,6 +82,6 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
     }
 
   return (
-    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, isGenerating, setIsGenerating}}>{children}</GameContext.Provider>
+    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, isGenerating}}>{children}</GameContext.Provider>
   )
 }

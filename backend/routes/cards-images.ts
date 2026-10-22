@@ -59,7 +59,7 @@ imageGenerateRouter.post('/', async (req, res) => {
             throw new Error('No generated card')
         };
         await pool.query(`UPDATE generated_cards SET cards = $1 WHERE theme = $2`, [JSON.stringify(completedCards), theme])
-        res.json({completedCards})
+        res.json({cards: completedCards})
       }
   } catch (err) {
     console.error(err);
