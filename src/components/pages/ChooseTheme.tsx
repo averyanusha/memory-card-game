@@ -1,11 +1,14 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { CardSetContext } from "../contexts/Contexts";
 import { GameContext } from "../contexts/GameState";
 import type {Card} from '../CardDatabase';
+import Submitting from "./Submitting";
 const API_URL = "http://localhost:3000";
 
-export default function ChooseTheme() {
+export default function ChooseTheme({ submitting, setSubmitting } : {
+  submitting: boolean,
+  setSubmitting: (value : boolean) => void}) {
   const cardSet = useContext(CardSetContext);
   if (!cardSet)
     throw new Error('CardSetContext used outside its provider');
@@ -41,6 +44,7 @@ export default function ChooseTheme() {
   }
 
   async function fetchTheme(selectedTheme: string) {
+    setSubmitting(true);
     try {
       const response = await fetch(`${API_URL}/generate-cards`, {
         method: 'POST',
@@ -85,25 +89,13 @@ export default function ChooseTheme() {
       }
     } catch (error) {
       console.error(error)
+    } finally {
+      setSubmitting(false);
     }
   }
 
-    // async function generateCards(prompts: string[]){
-    //   try {
-    //     const response = await fetch(`${API_URL}/generate-images`, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-type': 'application/json'
-    //       },
-    //       body: JSON.stringify({ prompts })
-    //     })
-    //     if(response.ok){
-    //       const data = await response.json();
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
+  useEffect(() => {
+  })
 
   function handleThemeRequest(event: React.SubmitEvent){
     event.preventDefault();
@@ -113,18 +105,20 @@ export default function ChooseTheme() {
 
   return (
     <>
-    <motion.div className="container" variants={themeMotion} animate='visible' initial='hidden'>
-      <motion.h1 className="game-subtitle">Choose your theme</motion.h1>
-      <motion.p className="game-title">Type anything you like to generate your theme</motion.p>
-      <form className="" onSubmit={handleThemeRequest}>
-        <motion.input type="text" name="theme" className="theme" placeholder={game?.theme}/>
-        <button type="submit" className="theme-button game-button">=</button>
-      </form>
-      <button className="game-button" onClick={() => {fetchTheme('geometric')}}>Geometric</button>
-      <button className="game-button" onClick={() => {fetchTheme('deep sea')}}>Deep Sea</button>
-      <button className="game-button" onClick={() => {fetchTheme('princesses')}}>Princesses</button>
-      <button className="game-button" onClick={() => {fetchTheme('cats in hats')}}>Cats in hats</button>
-    </motion.div>
+      {submitting && <Submitting /> }
+      <motion.div className="container" variants={themeMotion} animate='visible' initial='hidden'>
+        <motion.h1 className="game-subtitle">Choose your theme</motion.h1>
+        <motion.p className="game-title">Make me a deck of...</motion.p>
+        <form className="theme" onSubmit={handleThemeRequest}>
+          <motion.input type="text" name="theme" className="input theme-input" placeholder='sushi'/>
+          <button type="submit" className="theme-button game-button"></button>
+        </form>
+        <h2>or try one</h2>
+        <button className="game-button" onClick={() => {fetchTheme('geometric')}}>Geometric</button>
+        <button className="game-button" onClick={() => {fetchTheme('deep sea')}}>Deep Sea</button>
+        <button className="game-button" onClick={() => {fetchTheme('princesses')}}>Princesses</button>
+        <button className="game-button" onClick={() => {fetchTheme('cats in hats')}}>Cats in hats</button>
+      </motion.div>
     </>
   )
 }

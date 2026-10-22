@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { GameContext } from "./contexts/GameState";
 import { ModalContext, CardSetContext } from "./contexts/Contexts";
 import LevelSelect from "./pages/LevelSelect";
@@ -9,12 +8,12 @@ import Game from "./pages/Game";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Home() {
-  const navigate = useNavigate();
   const modal = useContext(ModalContext);
   const game = useContext(GameContext);
   const cards = useContext(CardSetContext);
   if (!game) throw new Error('CardContext used outside its provider');
-  const { displayCards, setDisplayCards, clickedId, resetCards, handleClickedCards, startGame, level, theme, isGenerating, gameStatus } = game;
+  const { displayCards, clickedId, level, theme, isGenerating, gameStatus } = game;
+  const [ submitting, setSubmitting ] = useState<boolean>(false);
   useEffect(() => {
     const saveResultInDb= async() => {
       if (gameStatus === 'playing')
@@ -46,11 +45,10 @@ export default function Home() {
     }
     saveResultInDb();
   }, [clickedId, gameStatus]);
-console.log("isGenerating:", isGenerating, "deck:", cards?.cardDeck[0]?.image);
 
   return (
     <div className='container hero'>
-      {!theme ? <ChooseTheme /> : displayCards.length === 0 ? <LevelSelect/> : isGenerating ? <LoadingPage /> : <Game/>}
+      {!theme ? <ChooseTheme submitting={submitting} setSubmitting={setSubmitting}/> : displayCards.length === 0 ? <LevelSelect setSubmitting={setSubmitting}/> : isGenerating ? <LoadingPage /> : <Game/>}
     </div>
   )
 }

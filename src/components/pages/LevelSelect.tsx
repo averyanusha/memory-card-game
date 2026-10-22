@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { GameContext } from "../contexts/GameState";
 
-export default function LevelSelect() {
+export default function LevelSelect({setSubmitting } : {
+  setSubmitting: (value : boolean) => void}) {
   const game = useContext(GameContext);
   if (!game) {
     throw new Error('GameContext is outside its porovider');
@@ -12,7 +13,7 @@ export default function LevelSelect() {
   return (
     <>
       <motion.div className='level' initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}}>
-        <motion.h2 animate={{ fontSize: '50px', color: '#ffdf99' }}>Choose your level</motion.h2>
+        <motion.h2 animate={{ fontSize: '50px', color: 'black' }}>Choose your level</motion.h2>
         <button className='game-button' onClick={() => {startGame('easy', 5)}}>Easy</button>
         <button className='game-button' onClick={() => {startGame('medium', 10)}}>Medium</button>
         <button className='game-button' onClick={() => {startGame('hard', 15)}}>Hard</button>

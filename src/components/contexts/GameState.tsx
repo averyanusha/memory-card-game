@@ -9,6 +9,7 @@ type GameState = {
   clickedId: number[],
   setClickedId: (value: number[]) => void,
   resetCards: () => void,
+  chooseNewTheme: () => void,
   handleClickedCards: (id: number) => void,
   startGame: (level: string, count: number) => void,
   shuffle: (array: number[]) => number[],
@@ -43,27 +44,35 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
     setClickedId([]);
   }
 
-    const handleClickedCards = (id: number) => {
-      const stored = localStorage.getItem('ids');
-      let savedIds: number[];
-      savedIds = stored ? JSON.parse(stored) : [];
-      if (!savedIds.find((el) => el === id)) {
-        savedIds.push(id);
-        localStorage.setItem('ids', JSON.stringify(savedIds));
-        setClickedId(savedIds);
-        shuffleSlice(displayCards.length);
-      } else if (clickedId.length === displayCards.length) {
+  const handleClickedCards = (id: number) => {
+    const stored = localStorage.getItem('ids');
+    let savedIds: number[];
+    savedIds = stored ? JSON.parse(stored) : [];
+    if (!savedIds.find((el) => el === id)) {
+      savedIds.push(id);
+      localStorage.setItem('ids', JSON.stringify(savedIds));
+      setClickedId(savedIds);
+      shuffleSlice(displayCards.length);
+      if (savedIds.length === displayCards.length) {
         setGameStatus('won')
-      } else {
-        setGameStatus('lost');
       }
+    } else {
+      setGameStatus('lost');
+    }
   }
 
-    const startGame = (level: string, count: number) => {
-      localStorage.setItem('ids', JSON.stringify([]));
-      setLevel(level);
-      shuffleSlice(count);
-    }
+  const startGame = (level: string, count: number) => {
+    localStorage.setItem('ids', JSON.stringify([]));
+    setLevel(level);
+    shuffleSlice(count);
+  }
+
+  const chooseNewTheme = () => {
+    resetCards();
+    setTheme('');
+    setCardDeck([]);
+    setGameStatus('playing');
+  }
 
 
     // Fisher-Yates shuffle algorithm 
@@ -82,6 +91,6 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
     }
 
   return (
-    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, isGenerating}}>{children}</GameContext.Provider>
+    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, isGenerating, chooseNewTheme}}>{children}</GameContext.Provider>
   )
 }

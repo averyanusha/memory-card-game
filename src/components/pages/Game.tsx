@@ -9,7 +9,7 @@ export default function Game(){
   if (!game) throw new Error('GameContext used outside its provider');
   const cards = useContext(CardSetContext);
   if(!cards) throw new Error('CardContext is outside its provider');
-  const { displayCards, setDisplayCards, clickedId, resetCards, gameStatus, setTheme, setGameStatus } = game;
+  const { displayCards, clickedId, resetCards, gameStatus, chooseNewTheme } = game;
   const [flip, setFlip] = useState<boolean>(true);
   const timeout = useRef<number | null>(null);
 
@@ -24,13 +24,10 @@ export default function Game(){
         <DisplayCards flip={flip} setFlip={setFlip} timeout={timeout}/> :
         <motion.div className='win' initial={{opacity: 0}} animate={{opacity: 1}}transition={{delay: 0.5, type: 'spring', stiffness: 50}}>
           <motion.h3 className='game-title'>{`You ${gameStatus}`}</motion.h3>
-          <button className='game-button' onClick={() => {
-            resetCards();
-            setDisplayCards([]);
-            }}>
+          <button className='game-button' onClick={() => {resetCards()}}>
               Start Over
           </button>
-          <button className="game-button" onClick={() => {setTheme(''), cards.setCardDeck([]), setDisplayCards([]), setGameStatus('playing')}}>Choose a new theme</button>
+          <button className="game-button" onClick={() => {chooseNewTheme()}}>Choose a new theme</button>
         </motion.div>
       }
     </div>
