@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { Card } from '../CardDatabase';
+import type { Card } from '../../types';
 
 type CardSet = {
   cardDeck: Card[],

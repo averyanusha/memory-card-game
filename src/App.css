@@ -47,7 +47,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(38, 38, 38, 0.7);
+  background: rgba(38, 38, 38, 0.9);
   z-index: 1;
 }
 
@@ -155,23 +155,28 @@
 
 .loading {
   display: flex;
-  align-items: center;
+  align-self: center;
   justify-content: center;
-  padding: 0;
+  padding: 0 15rem;
 }
 
-.loading-wrapper {
-  position: relative;
-  min-width: 50vw;
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.loading-text {
-  position: absolute;
-  left: 50%;
-  font-size: 2rem;
-  color: rgb(162, 134, 92);
-  transform: translate(-50%, -50%);
-  white-space: nowrap;
+.error-image {
+  width: 60%;
+}
+
+.error-title {
+  font-size: 4rem;
+}
+
+.error-button {
+  cursor: pointer;
 }
 
 .hero {
@@ -189,12 +194,25 @@
 }
 
 .theme {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.theme-image {
+  flex: 3;
+}
+
+.theme-form {
   margin: 2rem 0rem 0rem 0rem;
 }
 
 .theme-input {
   padding: 0.5rem 1rem;
   min-width: 5rem;
+}
+
+.theme-image img{
+  width: 60%;
 }
 
 .game-button {

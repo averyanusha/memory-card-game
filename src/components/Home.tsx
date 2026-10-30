@@ -4,6 +4,7 @@ import { ModalContext, CardSetContext } from "./contexts/Contexts";
 import LevelSelect from "./pages/LevelSelect";
 import ChooseTheme from "./pages/ChooseTheme";
 import LoadingPage from "./pages/LoadingPage";
+import ErrorPage from "./pages/ErrorPage";
 import Game from "./pages/Game";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -11,9 +12,10 @@ export default function Home() {
   const modal = useContext(ModalContext);
   const game = useContext(GameContext);
   const cards = useContext(CardSetContext);
-  if (!game) throw new Error('CardContext used outside its provider');
-  const { displayCards, clickedId, level, theme, isGenerating, gameStatus } = game;
-  const [ submitting, setSubmitting ] = useState<boolean>(false);
+  if (!game) throw new Error('GameContext used outside its provider');
+  if (!cards) throw new Error('CardContext used outside its provider');
+  const { displayCards, clickedId, level, theme, imagesSet, gameStatus, isError, setIsError, setTheme, isSubmitting } = game;
+  const { setCardDeck } = cards;
   useEffect(() => {
     const saveResultInDb= async() => {
       if (gameStatus === 'playing')
@@ -45,10 +47,10 @@ export default function Home() {
     }
     saveResultInDb();
   }, [clickedId, gameStatus]);
-
+  
   return (
     <div className='container hero'>
-      {!theme ? <ChooseTheme submitting={submitting} setSubmitting={setSubmitting}/> : displayCards.length === 0 ? <LevelSelect setSubmitting={setSubmitting}/> : isGenerating ? <LoadingPage /> : <Game/>}
+      {isError ? <ErrorPage code={isError} onDismiss={() => {setIsError(null); setTheme(''); setCardDeck([])}}/> : !theme ? <ChooseTheme /> : displayCards.length === 0 ? <LevelSelect /> : imagesSet ? <LoadingPage /> : <Game/>}
     </div>
   )
 }

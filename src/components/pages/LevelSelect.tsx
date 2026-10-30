@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { GameContext } from "../contexts/GameState";
 
-export default function LevelSelect({setSubmitting } : {
-  setSubmitting: (value : boolean) => void}) {
+export default function LevelSelect() {
   const game = useContext(GameContext);
   if (!game) {
     throw new Error('GameContext is outside its porovider');

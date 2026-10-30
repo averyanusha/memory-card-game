@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext, AuthContext } from "../contexts/Contexts";
-import { supabase } from "../../supabase";
+import { supabaseFront } from "../../supabase";
 const API_URL = import.meta.env.VITE_API_URL;
 
 type scoreType = {
@@ -70,8 +70,8 @@ export default function Profile () {
       return;
 
     const filePath = `${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage.from('avatars').upload(filePath, file, {upsert: true});
-    const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+    const { error } = await supabaseFront.storage.from('avatars').upload(filePath, file, {upsert: true});
+    const { data } = supabaseFront.storage.from('avatars').getPublicUrl(filePath);
     const avatarUrl = data.publicUrl;
     setProfileImg(avatarUrl);
 

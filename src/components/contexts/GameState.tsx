@@ -1,7 +1,15 @@
 import { useState, createContext, useContext } from "react";
 import { CardSetContext } from "./Contexts";
+import type { ErrorStatus } from "../../types";
+const API_URL = "http://localhost:3000";
 
-type GameStatus = 'playing' | 'won' | 'lost'
+type GameStatus = 'playing' | 'won' | 'lost';
+
+type JobStatus = {
+  status: 'waiting' | 'active' | 'completed' | 'failed';
+  cards?: GeneratedCards[];
+  code?: ErrorStatus;
+}
 
 type GameState = {
   displayCards: number[],
@@ -10,6 +18,7 @@ type GameState = {
   setClickedId: (value: number[]) => void,
   resetCards: () => void,
   chooseNewTheme: () => void,
+  fetchTheme: (selectedTheme: string) => Promise<void>,
   handleClickedCards: (id: number) => void,
   startGame: (level: string, count: number) => void,
   shuffle: (array: number[]) => number[],
@@ -18,11 +27,23 @@ type GameState = {
   setLevel: (value: string) => void
   theme: string,
   setTheme: (value: string) => void,
-  isGenerating: boolean,
+  imagesSet: boolean,
   gameStatus: GameStatus,
-  setGameStatus: (value: GameStatus) => void
+  setGameStatus: (value: GameStatus) => void,
+  isError: ErrorStatus | null,
+  setIsError: (value: ErrorStatus | null) => void,
+  isSubmitting: boolean,
+  setIsSubmitting: (value: boolean) => void
 }
 
+type ApiCard = {
+  name: string,
+  imagePrompt: string
+}
+
+interface GeneratedCards extends ApiCard {
+  imageUrl: string
+}
 
 export const GameContext = createContext<GameState | null>(null);
 
@@ -35,8 +56,10 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
   const { cardDeck, setCardDeck } = cardSet;
   const idArray = (cardDeck.map((card) => card.id));
   const [ theme, setTheme] = useState<string>('');
-  const isGenerating = cardDeck.every(el => el.image === '');
-  const [gameStatus, setGameStatus] = useState<GameStatus>('playing');
+  const imagesSet = cardDeck.every(el => el.image === '');
+  const [ gameStatus, setGameStatus ] = useState<GameStatus>('playing');
+  const [ isError, setIsError ] = useState<ErrorStatus | null>(null);
+  const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
 
   const resetCards = () => {
     localStorage.setItem('ids', JSON.stringify([]));
@@ -74,6 +97,104 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
     setGameStatus('playing');
   }
 
+  async function fetchTheme(selectedTheme: string) {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${API_URL}/generate-cards`, {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({ theme: selectedTheme })
+      });
+      if (response.ok) {
+        const data: { cards: ApiCard[] } = await response.json();
+        setCardDeck(
+          data.cards.map((card, i: number) => ({
+            id: i + 1,
+            name: card.name,
+            image: ""
+          }))
+        )
+        setTheme(selectedTheme);
+        imageJob(selectedTheme);
+      } else {
+        const data = await response.json();
+        console.log("setting error:", data.code);
+        setIsError(data.code ?? 'GENERATION_FAILED');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsError('NETWORK');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function imageJob(selectedTheme: string) {
+    try {
+      console.log(`Generating images, theme for ${selectedTheme}`)
+      const response = await fetch(`${API_URL}/generate-images`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ theme: selectedTheme })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`Job ID is ${data.jobId}`);
+        if (data.jobId)
+          polljob(data.jobId)
+        else if (data.cards) {
+          updateCardDeck(data.cards);
+        }
+      } else {
+        const data = await response.json();
+        setIsError(data.code ?? 'GENERATION_FAILED');
+        console.log("setting error to:", data.code);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      setIsError('NETWORK');
+    }
+  }
+
+  function sleeper (timeout: number) {
+    return new Promise(resolve => setTimeout(resolve, timeout))
+  }
+
+  async function polljob(id: number){
+    try {
+      const response = await fetch(`${API_URL}/job/${id}`);
+      if (response.ok) {
+        const jobResponse: JobStatus = await response.json();
+        while (true) {
+          if (jobResponse.status === 'completed' && jobResponse.cards) {
+            updateCardDeck(jobResponse.cards);
+            return;
+          }
+          if (jobResponse.status === 'failed' && jobResponse.code) {
+            setIsError(jobResponse.code);
+            return;
+          }
+          await sleeper(2000);
+        }
+      }
+    } catch(error) {
+      console.error(error);
+      setIsError('JOB_NOT_FOUND');
+    }
+  }
+
+  function updateCardDeck(cards: GeneratedCards[]) {
+    setCardDeck(cards.map((card, i: number) => ({
+      id: i + 1,
+      name: card.name,
+      image: card.imageUrl
+    })))
+  }
 
     // Fisher-Yates shuffle algorithm 
 
@@ -91,6 +212,6 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
     }
 
   return (
-    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, isGenerating, chooseNewTheme}}>{children}</GameContext.Provider>
+    <GameContext.Provider value={{ displayCards, setDisplayCards, clickedId, setClickedId, resetCards, handleClickedCards, startGame, shuffle, shuffleSlice, gameStatus, setGameStatus, level, setLevel, theme, setTheme, imagesSet, chooseNewTheme, fetchTheme, isError, setIsError, isSubmitting, setIsSubmitting}}>{children}</GameContext.Provider>
   )
 }

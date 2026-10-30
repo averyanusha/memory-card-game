@@ -79,9 +79,9 @@ cardsGenerateRouter.post('/', async (req, res) => {
   } catch (err) {
       if (err instanceof z.ZodError) {
         console.error(err. issues);
-        return res.status(400).json({ error: "Invalid theme"});
+        return res.status(400).json({ code: 'THEME_REJECTED'});
       }
       console.error(err);
-      res.status(500).json({ error: 'Failed to generate cards'});
+      res.status(500).json({ code: 'GENERATION_FAILED'});
     }
 })

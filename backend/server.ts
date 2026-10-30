@@ -9,7 +9,7 @@ import { JWT_SECRET } from './db/config.js';
 import { Resend } from 'resend';
 import { cardsGenerateRouter } from './routes/cards-prompt.js';
 import { imageGenerateRouter } from './routes/cards-images.js';
-
+import { jobRouter } from './routes/job-router.js';
 
 const app = express();
 
@@ -39,6 +39,7 @@ app.use('/avatar', avatarRouter);
 app.use('/reconfirm-email', reconfirmEmailRouter);
 app.use('/generate-cards', cardsGenerateRouter);
 app.use('/generate-images', imageGenerateRouter);
+app.use('/job', jobRouter);
 //Middleware
 
 declare global {
