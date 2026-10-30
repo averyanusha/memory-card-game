@@ -10,6 +10,7 @@ import { Resend } from 'resend';
 import { cardsGenerateRouter } from './routes/cards-prompt.js';
 import { imageGenerateRouter } from './routes/cards-images.js';
 import { jobRouter } from './routes/job-router.js';
+import './queues/worker.js'
 
 const app = express();
 
