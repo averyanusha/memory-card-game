@@ -13,15 +13,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "bcrypt": "^6.0.0",
+    "bullmq": "^6.5.2",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
+    "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
+    "openai": "^7.45.1",
     "pg": "^8.22.0",
     "resend": "^6.18.1",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
