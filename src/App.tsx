@@ -5,8 +5,6 @@ import './App.css'
 import Profile from './components/pages/Profile';
 import Home from './components/Home';
 import VerifyEmail from './components/VerifyEmail';
-import ChooseTheme from './components/pages/ChooseTheme';
-import LevelSelect from './components/pages/LevelSelect';
 
 const router = createBrowserRouter([
   {

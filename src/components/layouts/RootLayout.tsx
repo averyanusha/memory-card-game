@@ -1,7 +1,7 @@
 import { Outlet, Link } from 'react-router-dom';
 import Navbar from '../Navbar';
 import Modal from '../Modal';
-import type { Card } from '../CardDatabase';
+import type { Card } from '../../types';
 import LoadingPage from '../pages/LoadingPage';
 import Banner from '../Banner';
 import { useEffect, useState } from 'react';

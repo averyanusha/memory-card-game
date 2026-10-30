@@ -4,9 +4,6 @@ import OpenAi from 'openai';
 import { supabase } from '../db/supabase.js';
 import pool from '../db/pool.js';
 import sharp from 'sharp';
-import dotenv from 'dotenv';
-dotenv.config({ path: '../.env'});
-
 
 
 const client = new OpenAi({
@@ -21,8 +18,9 @@ type StoredGeneratedCard = {
 }
 
 const worker = new Worker('images', async(job: Job) => {
+  try {
   const { theme } = job.data;
-  const result = await pool.query(`SELECT cards FROM generated-cards WHERE theme = $1`, [theme]);
+  const result = await pool.query(`SELECT cards FROM generated_cards WHERE theme = $1`, [theme]);
   const completedCards = [];
   const cards: StoredGeneratedCard[] = result.rows[0].cards
   const prompts = cards.map((card) => client.images.generate({
@@ -48,5 +46,10 @@ const worker = new Worker('images', async(job: Job) => {
     if (!data) 
       throw new Error('No generated card')
   };
-  await pool.query(`UPDATE generated_cards SET cards = $1 WHERE theme = $2`, [JSON.stringify(completedCards), theme])
-})
+  await pool.query(`UPDATE generated_cards SET cards = $1 WHERE theme = $2`, [JSON.stringify(completedCards), theme]);
+  console.log("WORKER finished job", job.id, completedCards.length, "cards");
+  } catch (error) {
+  console.log('Worker failed job', job.id, error);
+  throw error;
+  }
+}, { connection, concurrency: 1});

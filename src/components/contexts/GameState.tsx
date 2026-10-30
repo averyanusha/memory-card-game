@@ -1,7 +1,7 @@
 import { useState, createContext, useContext } from "react";
 import { CardSetContext } from "./Contexts";
 import type { ErrorStatus } from "../../types";
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 type GameStatus = 'playing' | 'won' | 'lost';
 
@@ -167,26 +167,26 @@ export function GameContextProvider({children} : { children: React.ReactNode }) 
 
   async function polljob(id: number){
     try {
-      const response = await fetch(`${API_URL}/job/${id}`);
-      if (response.ok) {
-        const jobResponse: JobStatus = await response.json();
         while (true) {
-          if (jobResponse.status === 'completed' && jobResponse.cards) {
-            updateCardDeck(jobResponse.cards);
-            return;
-          }
-          if (jobResponse.status === 'failed' && jobResponse.code) {
-            setIsError(jobResponse.code);
-            return;
+          const response = await fetch(`${API_URL}/job/${id}`);
+          if (response.ok) {
+            const jobResponse: JobStatus = await response.json();
+            if (jobResponse.status === 'completed' && jobResponse.cards) {
+              updateCardDeck(jobResponse.cards);
+              return;
+            }
+            if (jobResponse.status === 'failed' && jobResponse.code) {
+              setIsError(jobResponse.code);
+              return;
+            }
           }
           await sleeper(2000);
         }
+      } catch(error) {
+        console.error(error);
+        setIsError('JOB_NOT_FOUND');
       }
-    } catch(error) {
-      console.error(error);
-      setIsError('JOB_NOT_FOUND');
     }
-  }
 
   function updateCardDeck(cards: GeneratedCards[]) {
     setCardDeck(cards.map((card, i: number) => ({

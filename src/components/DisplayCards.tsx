@@ -3,7 +3,6 @@ import { motion } from 'motion/react'
 import backOfTheCard from '../assets/cards-cover.svg'
 import { CardSetContext } from './contexts/Contexts';
 import { GameContext } from './contexts/GameState';
-const API_URL = "http://localhost:3000";
 
 export default function DisplayCards ({flip, setFlip, timeout}: {
   flip: boolean,
