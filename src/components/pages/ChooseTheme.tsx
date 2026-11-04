@@ -42,8 +42,7 @@ export default function ChooseTheme() {
 
   function handleThemeRequest(event: React.SubmitEvent){
     event.preventDefault();
-    const themeInput = event.target.elements.namedItem('theme') as HTMLInputElement;
-    fetchTheme(themeInput.value);
+    fetchTheme(themeInput);
   }
 
 
