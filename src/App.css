@@ -34,6 +34,7 @@
   padding: 5px;
   border-radius: 10px;
   border: none;
+  font-size: 16px;
   box-shadow: 5px 5px 20px rgba(116, 116, 116, 0.4);
 }
 
@@ -90,6 +91,7 @@
   padding: 0.5rem 1rem;
   border-radius: 10px;
   margin: 1rem;
+  font-size: 16px;
 }
 
 .sign-up-button { 
@@ -218,6 +220,7 @@
   flex: 1 1 auto;
   min-width: 0;
   max-width: 320px;
+  font-size: 16px;
   padding: 0.5rem 1rem;
 }
 
@@ -430,6 +433,9 @@
   }
   .theme-image img{
     width: 40%
+  }
+  .forward { 
+    display: none;
   }
   .theme {
     gap: 0;
