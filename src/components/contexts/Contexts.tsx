@@ -29,9 +29,15 @@ type VerifyEmail = {
   setEmailVerified: (value: boolean) => void
 }
 
+type Mobile = {
+  isMobile: boolean,
+  setIsMobile: (value: boolean) => void
+}
+
 export const VerifyEmailContext = createContext<VerifyEmail | null>(null);
 export const AuthContext = createContext<Auth | null >(null);
 export const UserContext = createContext<User | null >(null);
 export const ModalContext = createContext<Modal | null >(null);
 export const BannerContext = createContext<VerifyBanner | null>(null);
 export const CardSetContext = createContext<CardSet | null>(null);
+export const MobileContext = createContext<Mobile | null>(null)

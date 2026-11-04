@@ -26,6 +26,18 @@ export default function ChooseTheme() {
     }
   };
 
+  const wandMotion: Variants = {
+    float: {
+      y: [0, -28, 0],
+      x: [0, 50, 0],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: 'easeInOut'
+      }
+    }
+  }
+
 
   function handleThemeRequest(event: React.SubmitEvent){
     event.preventDefault();
@@ -39,20 +51,22 @@ export default function ChooseTheme() {
       {isSubmitting && <LoadingPage /> }
       <motion.div className="container theme" variants={themeMotion} animate='visible' initial='hidden'>
         <div className="theme-image">
-          <img src={magicWand} alt="magic-wand"/>
+          <motion.img src={magicWand} alt="magic-wand" variants={wandMotion} animate='float'/>
         </div>
-        <div className="">
-          <motion.h1 className="game-subtitle">Choose your theme</motion.h1>
-          <motion.p className="game-title">Make me a deck of...</motion.p>
+        <div className="theme-content">
+          <motion.h1 className="game-title">Choose your theme</motion.h1>
+          <motion.p className="game-subtitle">Make me a deck of...</motion.p>
           <form className="theme-form" onSubmit={handleThemeRequest}>
             <motion.input type="text" name="theme" className="input theme-input" placeholder='sushi'/>
-            <button type="submit" className="theme-button game-button"></button>
+            <button type="submit" className="forward game-button"></button>
           </form>
           <h2>or try one</h2>
-          <button className="game-button" onClick={() => {fetchTheme('geometric')}}>Geometric</button>
-          <button className="game-button" onClick={() => {fetchTheme('deep sea')}}>Deep Sea</button>
-          <button className="game-button" onClick={() => {fetchTheme('princesses')}}>Princesses</button>
-          <button className="game-button" onClick={() => {fetchTheme('cats in hats')}}>Cats in hats</button>
+          <div className="theme-examples">
+            <button className="theme-button" onClick={() => {fetchTheme('geometric')}}>Geometric</button>
+            <button className="theme-button" onClick={() => {fetchTheme('deep sea')}}>Deep Sea</button>
+            <button className="theme-button" onClick={() => {fetchTheme('princesses')}}>Princesses</button>
+            <button className="theme-button" onClick={() => {fetchTheme('cats in hats')}}>Cats in hats</button>
+          </div>
         </div>
       </motion.div>
     </>

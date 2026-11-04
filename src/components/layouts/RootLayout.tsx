@@ -6,7 +6,7 @@ import LoadingPage from '../pages/LoadingPage';
 import Banner from '../Banner';
 import { useEffect, useState } from 'react';
 import { GameContextProvider } from '../contexts/GameState';
-import { CardSetContext, VerifyEmailContext, AuthContext, UserContext, BannerContext, ModalContext } from '../contexts/Contexts';
+import { CardSetContext, VerifyEmailContext, AuthContext, UserContext, BannerContext, ModalContext, MobileContext } from '../contexts/Contexts';
 const API_URL = import.meta.env.VITE_API_URL;
 
 
@@ -18,9 +18,11 @@ export default function RootLayout(){
   const [ emailVerified, setEmailVerified ] = useState<boolean>(false);
   const [ cardDeck, setCardDeck ] = useState<Card[]>([]);
   const [ isLoading, setIsLoading ]  = useState<boolean>(false);
+  const [ isMobile, setIsMobile ] = useState<boolean>(window.innerWidth < 768);
 
   useEffect(() => {
-
+    const mobileScreen = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', mobileScreen)
     const checkIfTokenExists = async () => {
       const token = localStorage.getItem('sign in token');
       if (!token) {
@@ -51,29 +53,32 @@ export default function RootLayout(){
       }
     }
     checkIfTokenExists();
+    return () => window.removeEventListener('resize', mobileScreen);
   }, [])
 
   if (isLoading)
     return <LoadingPage />
 
   return (
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
-      <UserContext.Provider value={{username, setUserName}}>
-        <ModalContext.Provider value={{showModal, setShowModal}}>
-          <CardSetContext.Provider value={{cardDeck, setCardDeck}}>
-            <GameContextProvider>
-              <VerifyEmailContext.Provider value={{emailVerified, setEmailVerified}}>
-                <BannerContext.Provider value={{bannerOpen, setBannerOpen}}>
-                  <Navbar/>
-                  {isLoggedIn && !emailVerified && bannerOpen && <Banner />}
-                  <Outlet />
-                  {showModal && <Modal />}
-                </BannerContext.Provider>
-              </VerifyEmailContext.Provider>
-            </GameContextProvider>
-          </CardSetContext.Provider>
-        </ModalContext.Provider>
-      </UserContext.Provider>
-    </AuthContext.Provider>
+    <MobileContext.Provider value={{isMobile, setIsMobile}}>
+      <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
+        <UserContext.Provider value={{username, setUserName}}>
+          <ModalContext.Provider value={{showModal, setShowModal}}>
+            <CardSetContext.Provider value={{cardDeck, setCardDeck}}>
+              <GameContextProvider>
+                <VerifyEmailContext.Provider value={{emailVerified, setEmailVerified}}>
+                  <BannerContext.Provider value={{bannerOpen, setBannerOpen}}>
+                    <Navbar/>
+                    {isLoggedIn && !emailVerified && bannerOpen && <Banner />}
+                    <Outlet />
+                    {showModal && <Modal />}
+                  </BannerContext.Provider>
+                </VerifyEmailContext.Provider>
+              </GameContextProvider>
+            </CardSetContext.Provider>
+          </ModalContext.Provider>
+        </UserContext.Provider>
+      </AuthContext.Provider>
+    </MobileContext.Provider>
   )
 }
