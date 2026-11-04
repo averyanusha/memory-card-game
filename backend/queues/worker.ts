@@ -40,8 +40,9 @@ const worker = new Worker('images', async(job: Job) => {
     const generatedImg = Buffer.from(b64, "base64");
 
     const imgWebp = await sharp(generatedImg).resize(512, 512).webp({quality: 80}).toBuffer();
-    await supabase.storage.from('generate-cards').upload(`${theme.replace(/\s+/g, '-')}${i}.webp`, imgWebp, { contentType: 'image/webp'});
-    const { data } = supabase.storage.from('generate-cards').getPublicUrl(`${theme.replace(/\s+/g, '-')}${i}.webp`);
+    const slug = theme.replace(/[^a-z0-9]+/gi, '-').toLowerCase() || 'theme';
+    await supabase.storage.from('generate-cards').upload(`${slug}-${i}.webp`, imgWebp, { contentType: 'image/webp'});
+    const { data } = supabase.storage.from('generate-cards').getPublicUrl(`${slug}-${i}.webp`);
     completedCards.push({...cards[i], imageUrl: data.publicUrl})
     if (!data) 
       throw new Error('No generated card')
