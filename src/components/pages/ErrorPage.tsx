@@ -17,7 +17,7 @@ export default function ErrorPage({ code, onDismiss} : {
       <motion.div className="container error">
         <img src={brokenWand} alt="broken magic wand" className='error-image'/>
         <h1 className='error-title'>404</h1>
-        <h2 className='error-message'>{ErrorMessages[code]}</h2>
+        <h2 className='error-message'>{code}</h2>
         <button onClick={onDismiss} className='error-button'>Try again</button>
       </motion.div>
     </>
