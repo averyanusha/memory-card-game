@@ -9,7 +9,8 @@ export default function ChooseTheme() {
   const game = useContext(GameContext);
   if(!game)
     throw new Error('GameContext used outside its provider');
-  const {isError, setIsError, fetchTheme, isSubmitting} = game;
+  const {fetchTheme, isSubmitting} = game;
+  const [ themeInput, setThemeInput ]= useState<string>('')
   const themeMotion: Variants = {
     hidden: {
       y: '-100vh',
@@ -57,7 +58,7 @@ export default function ChooseTheme() {
           <motion.h1 className="game-title">Choose your theme</motion.h1>
           <motion.p className="game-subtitle">Make me a deck of...</motion.p>
           <form className="theme-form" onSubmit={handleThemeRequest}>
-            <motion.input type="text" name="theme" className="input theme-input" placeholder='sushi'/>
+            <motion.input type="text" name="theme" className="input theme-input" placeholder='sushi' value={themeInput} onChange={(e) => setThemeInput(e.target.value)}/>
             <button type="submit" className="forward game-button"></button>
           </form>
           <h2>or try one</h2>
