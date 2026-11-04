@@ -1,6 +1,6 @@
 # Memory Card Game
 
-A full-stack memory game where every deck is generated on demand. Type any theme — "deep sea", "vintage cameras", "medieval armour" — and an LLM writes the card set while an image model illustrates it.
+A full-stack memory game where a deck of cards is generated on demand. Type any theme: "deep sea", "vintage cameras", "medieval armour"; and an LLM generates the card set while an image model illustrates it.
 
 🎮 **Live demo:** [card-game.ianadev.com](https://card-game.ianadev.com)
 
@@ -10,9 +10,11 @@ A full-stack memory game where every deck is generated on demand. Type any theme
 
 ## The game
 
-A hybrid between "Memory Loop" and "Shuffle Table": the challenge isn't remembering *where* cards were, but keeping track of which ones you've already clicked while the board reshuffles after every move.
+The game essentially is a hybrid between "Memory Loop" and "Shuffle table" where the challenge isn't remembering *where* the cards were, but about keeping track of which card you've already interacted with while the board constantly shifts.
 
-Three difficulty levels — 5, 10 or 15 cards — each with its own scoring multiplier.
+You can test your memory with 3 different levels of difficulty: 5, 10 and 15 cards.
+
+Three difficulty levels, each with its own board size and scoring multiplier.
 
 Decks are generated from a user-supplied theme, cached, and reused.
 

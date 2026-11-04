@@ -49,7 +49,7 @@ export default function ChooseTheme() {
   return (
     <>
       {isSubmitting && <LoadingPage /> }
-      <motion.div className="container theme" variants={themeMotion} animate='visible' initial='hidden'>
+      <motion.div className="theme" variants={themeMotion} animate='visible' initial='hidden'>
         <div className="theme-image">
           <motion.img src={magicWand} alt="magic-wand" variants={wandMotion} animate='float'/>
         </div>
