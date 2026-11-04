@@ -51,8 +51,6 @@
   background: rgba(38, 38, 38, 0.9);
   z-index: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .modal {
